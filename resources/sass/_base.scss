@@ -1,0 +1,23 @@
+@use 'colors';
+
+$font-stack: 'Open Sans', sans-serif;
+$font-heading: 'Poppins', sans-serif;
+
+body {
+    color: colors.$font-color;
+    font-family: $font-stack;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+strong, b {
+    font-family: $font-heading;
+    font-weight: 700;
+}
+
+.con-vs-chip {
+    display: inline-block !important;
+    line-height: 28px;
+}

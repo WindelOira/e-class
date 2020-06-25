@@ -1,0 +1,50 @@
+$font-color: #212121;
+
+$primary: #2E7D32;
+$success: #43A047;
+$danger: #e53935;
+$warning: #FB8C00;
+$dark: #212121;
+$light: #ffffff;
+
+.primary {
+    background-color: $primary !important;
+}
+.primary-text {
+    color: $primary !important;
+}
+
+.success {
+    background-color: $success !important;
+}
+.success-text {
+    color: $success !important;
+}
+
+.danger {
+    background-color: $danger !important;
+}
+.danger-text {
+    color: $danger !important;
+}
+
+.warning {
+    background-color: $warning !important;
+}
+.warning-text {
+    color: $warning !important;
+}
+
+.dark {
+    background-color: $dark !important;
+}
+.dark-text {
+    color: $dark !important;
+}
+
+.light {
+    background-color: $light !important;
+}
+.light-text {
+    color: $light !important;
+}

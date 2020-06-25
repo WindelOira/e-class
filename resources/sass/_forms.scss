@@ -1,0 +1,49 @@
+@use 'base';
+@use 'colors';
+
+.vs-component.vs-con-input-label,
+.con-select {
+    width: 100%;
+
+    .vs-input--label,
+    .vs-select--label {
+        color: colors.$font-color;
+        margin-bottom: 5px;
+        font-family: base.$font-heading;
+        font-size: 0.7rem;
+        display: block;
+    }
+
+    .vue__time-picker {
+        width: 100%;
+        display: block;
+
+        .vs-input--input {
+            width: 100%;
+            height: auto;
+            padding: .4rem;
+        }   
+
+        .dropdown,
+        .dropdown .select-list {
+            width: 100%;
+        }
+    }
+
+    .vs-input--icon-validate {
+        display: none;
+    }
+}
+
+.con-select {
+    width: 100% !important;
+}
+
+.vs-component.con-vs-checkbox {
+    -webkit-justify-content: start;
+    justify-content: start;
+
+    .vs-checkbox .vs-checkbox--icon {
+        font-size: 16px;
+    }
+}

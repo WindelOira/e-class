@@ -1,0 +1,23 @@
+$grid-spacing: .75rem;
+
+.container {
+    max-width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.vs-row {
+    width: calc(100% + #{$grid-spacing * 2}) !important;
+    margin-right: -$grid-spacing;
+    margin-left: -$grid-spacing;
+
+    .vs-col {
+        padding-right: $grid-spacing;
+        padding-left: $grid-spacing;
+    }
+}
+
+.vs-table--pagination {
+    padding-right: $grid-spacing !important;
+    padding-left: $grid-spacing !important;
+}

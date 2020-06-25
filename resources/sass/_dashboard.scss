@@ -1,0 +1,54 @@
+@use 'colors';
+
+$sidebar-width: 300px;
+
+#app-dashboard {
+    #app-sidebar {
+        width: $sidebar-width;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+
+        .vs-list--header {
+            background-color: #fbfbfb;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .vs-list--item {
+            position: relative;
+
+            &.vs-list--item-active::before {
+                content: '';
+                width: 4px;
+                height: 100%;
+                background-color: colors.$primary;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+    }
+
+    #app-main {
+        margin-left: $sidebar-width;
+
+        .vs-navbar--logo {
+            max-width: 50px;
+            margin-right: 10px;
+            display: inline-block;
+            vertical-align: middle;
+
+            img {
+                max-width: 100%;
+            }
+        }
+    }
+
+    &.no-sidebar {
+        #app-main {
+            margin-left: 0;
+
+        }
+    }
+}
