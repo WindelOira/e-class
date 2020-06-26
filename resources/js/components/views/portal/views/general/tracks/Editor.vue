@@ -66,6 +66,8 @@
                         this.$vs.notify({ title: 'Success', text: 'New track created.', color: 'success' })
 
                         this.$router.push({ name: 'tracks' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             },
@@ -76,6 +78,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'tracks', id: this.models.track.id, data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Track updated.', color: 'success' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             }

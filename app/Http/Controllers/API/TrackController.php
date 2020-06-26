@@ -34,11 +34,15 @@ class TrackController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
+        $duplicates = Track::where('name', '=', $request->input('name'))
+                            ->get();
 
-        $track = Track::create([
-            'name'      => $input['name']
-        ]);
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Track already exists.'
+            ], 401);
+
+        $track = Track::create($request->all());
 
         return response()->json([
             'response'      => $track
@@ -85,11 +89,17 @@ class TrackController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->all();
+        $duplicates = Track::where('id', '!=', $id)
+                            ->where('name', '=', $request->input('name'))
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Track already exists.'
+            ], 401);
 
         $track = Track::findOrFail($id);
-        $track->name = $input['name'];
-        $track->save();
+        $track->update($request->all());
         
         return response()->json([
             'response'      => $track
