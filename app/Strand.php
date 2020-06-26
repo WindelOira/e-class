@@ -15,13 +15,32 @@ class Strand extends Model
      * @var array
      */
     protected $fillable = [
-        'code', 'description',
+        'track_id', 'code', 'description',
     ];
+
+    /**
+     * Get the track that owns the subject.
+     */
+    public function track() {
+        return $this->belongsTo('App\Track');
+    }
 
     /**
      * Get sections that belong to the strand.
      */
     public function sections() {
         return $this->belongsToMany('App\Section');
+    }
+
+    /**
+     * Get the stramd's track.
+     * 
+     * @param   string  $value
+     * @return  object
+     */
+    public function getTrackIdAttribute($value) {
+        $track = Track::find($value);
+
+        return $track;
     }
 }

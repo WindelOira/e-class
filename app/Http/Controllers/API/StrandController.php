@@ -34,6 +34,15 @@ class StrandController extends Controller
      */
     public function store(Request $request)
     {
+        $duplicates = Strand::where('code', '=', $request->input('code'))
+                            ->orWhere('description', '=', $request->input('description'))
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Strand already exists.'
+            ], 401);
+
         $strand = Strand::create($request->all());
 
         return response()->json([
@@ -81,6 +90,18 @@ class StrandController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $duplicates = Strand::where('id', '!=', $id)
+                            ->where(function($query) use ($request) {
+                                $query->where('code', '=', $request->input('code'))
+                                        ->orWhere('description', '=', $request->input('description'));
+                            })
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Strand already exists.'
+            ], 401);
+
         $strand = Strand::findOrFail($id);
         $strand->update($request->all());
 

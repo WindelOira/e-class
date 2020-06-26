@@ -32,6 +32,15 @@
                     <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
                         <vs-card>
                             <div>
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-select v-model="models.strand.track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" placeholder="Select Track" class="mb-2">
+                                        <vs-select-item v-for="(track, index) in $store.state.options.tracks" :key="index" :value="track.value" :text="track.text"/>
+                                    </vs-select>
+                                </validation-provider>
+                                <p v-if="0 == $store.state.options.tracks.length">
+                                    No tracks found. Please create <router-link :to="{ name: 'track_new' }">here.</router-link>
+                                </p>
+
                                 <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                                 <vs-button @click="$router.push({ name: 'strands' })" color="grey" class="float-right">Cancel</vs-button>
                             </div>
@@ -68,6 +77,8 @@
                         this.$vs.notify({ title: 'Success', text: 'New strand created.', color: 'success' })
 
                         this.$router.push({ name: 'strands' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             },
@@ -78,12 +89,15 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'strands', id: this.models.strand.id, data: this.models.strand }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Strand updated.', color: 'success' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
-
                 })
             }
         },
         created() {
+            this.$store.dispatch('getSelectOptions', { source: 'tracks' })
+
             if( this.$route.params.id ) {
                 if( !this.$store.state.apiData.active ) {
                     this.$store.dispatch('getDataBySource', { source: 'strands', id: this.$route.params.id }).then(response => {
