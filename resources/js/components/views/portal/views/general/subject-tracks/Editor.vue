@@ -8,48 +8,50 @@
         </vs-row>
 
         <validation-observer ref="observer">
-            <vs-row>
-                <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
-                    <vs-card>
-                        <p class="mb-3">
-                            <router-link :to="{ name: 'subject-tracks' }">
-                                <small>&laquo; Return to all subject tracks</small>
-                            </router-link>
-                        </p>
+            <form @submit.prevent="$route.params.id ? update() : create()">
+                <vs-row>
+                    <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
+                        <vs-card>
+                            <p class="mb-3">
+                                <router-link :to="{ name: 'subject-tracks' }">
+                                    <small>&laquo; Return to all subject tracks</small>
+                                </router-link>
+                            </p>
 
-                        <vs-row>
-                            <vs-col>
-                                <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-input v-model="models.track.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" class="mb-4"></vs-input>
-                                </validation-provider>
+                            <vs-row>
+                                <vs-col>
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-input v-model="models.track.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" class="mb-4"></vs-input>
+                                    </validation-provider>
 
-                                <div class="vs-component vs-con-input-label mb-3">
-                                    <label class="vs-input--label">Written Work ({{ models.track.written_work }}%)</label>
-                                    <vs-slider v-model="models.track.written_work" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
-                                </div>
+                                    <div class="vs-component vs-con-input-label mb-3">
+                                        <label class="vs-input--label">Written Work ({{ models.track.written_work }}%)</label>
+                                        <vs-slider v-model="models.track.written_work" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
+                                    </div>
 
-                                <div class="vs-component vs-con-input-label mb-3">
-                                    <label class="vs-input--label">Performance Task ({{ models.track.performance_task }}%)</label>
-                                    <vs-slider v-model="models.track.performance_task" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
-                                </div>
+                                    <div class="vs-component vs-con-input-label mb-3">
+                                        <label class="vs-input--label">Performance Task ({{ models.track.performance_task }}%)</label>
+                                        <vs-slider v-model="models.track.performance_task" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
+                                    </div>
 
-                                <div class="vs-component vs-con-input-label mb-3">
-                                    <label class="vs-input--label">Quarterly Assessment ({{ models.track.quarterly_assessment }}%)</label>
-                                    <vs-slider v-model="models.track.quarterly_assessment" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
-                                </div>
-                            </vs-col>
-                        </vs-row>
-                    </vs-card>
-                </vs-col>
-                <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
-                    <vs-card>
-                        <div>
-                            <vs-button @click="$route.params.id ? update() : create()">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
-                            <vs-button @click="$router.push({ name: 'subject-tracks' })" color="grey" class="float-right">Cancel</vs-button>
-                        </div>
-                    </vs-card>
-                </vs-col>
-            </vs-row>
+                                    <div class="vs-component vs-con-input-label mb-3">
+                                        <label class="vs-input--label">Quarterly Assessment ({{ models.track.quarterly_assessment }}%)</label>
+                                        <vs-slider v-model="models.track.quarterly_assessment" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
+                                    </div>
+                                </vs-col>
+                            </vs-row>
+                        </vs-card>
+                    </vs-col>
+                    <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
+                        <vs-card>
+                            <div>
+                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button @click="$router.push({ name: 'subject-tracks' })" color="grey" class="float-right">Cancel</vs-button>
+                            </div>
+                        </vs-card>
+                    </vs-col>
+                </vs-row>
+            </form>
         </validation-observer>
     </div>
 </template>
@@ -89,7 +91,7 @@
                     this.$store.dispatch('createDataBySource', { source: 'subject_tracks', data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New subject track created.', color: 'success' })
 
-                        this.$router.push({ name: 'subject-track_edit', params: { id: response.data.response.id } })
+                        this.$router.push({ name: 'subject_tracks' })
                     })
                 })
             },

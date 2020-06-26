@@ -37,8 +37,8 @@ class StudentController extends Controller
         $input = $request->all();
 
         $student = Student::create([
-            'student_id'    => $input['student_id'],
-            'name'          => $input['meta']['fname'] .' '. $input['meta']['lname']
+            'student_number'    => $request->input('student_number'),
+            'name'              => $input['metas']['fname'] .' '. $input['metas']['lname']
         ]);
 
         return response()->json([
@@ -73,7 +73,16 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
 
         return response()->json([
-            'response'      => $student
+            'response'      => [
+                'id'                => $student->id,
+                'student_number'    => $student->student_number,
+                'name'              => $student->name,
+                'metas'             => 0 < count($student->metas) ? Arr::pluck($student->metas, 'value', 'key') : [
+                    'fname'             => '',
+                    'lname'             => '',
+                    'gender'            => 'm'
+                ]
+            ]
         ], 200);
     }
 
@@ -86,10 +95,8 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->all();
-
         $student = Student::findOrFail($id);
-        $student->name = $input['name'];
+        $student->name = $request->input('name');
         $student->save();
 
         return response()->json([

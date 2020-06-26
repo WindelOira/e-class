@@ -8,72 +8,74 @@
         </vs-row>
 
         <validation-observer ref="observer">
-            <vs-row>
-                <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
-                    <vs-card>
-                        <p class="mb-3">
-                            <router-link :to="{ name: 'students' }">
-                                <small>&laquo; Return to all students</small>
-                            </router-link>
-                        </p>
-                        
-                        <div>
-                            <h4 class="mb-2">Student Information</h4>
+            <form @submit.prevent="$route.params.id ? update() : create()">
+                <vs-row>
+                    <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
+                        <vs-card>
+                            <p class="mb-3">
+                                <router-link :to="{ name: 'students' }">
+                                    <small>&laquo; Return to all students</small>
+                                </router-link>
+                            </p>
+                            
+                            <div>
+                                <h4 class="mb-2">Student Information</h4>
 
-                            <vs-row>
-                                <vs-col vs-xs="12" vs-sm="8" vs-lg="6">
-                                    <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.student.student_id" :danger="0 < errors.length" :danger-text="errors[0]" :disabled="$route.params.id" label="Student ID" class="mb-3"></vs-input>
-                                    </validation-provider>
-                                </vs-col>
-                            </vs-row>
+                                <vs-row>
+                                    <vs-col vs-xs="12" vs-sm="8" vs-lg="6">
+                                        <validation-provider rules="required" v-slot="{errors}">
+                                            <vs-input v-model="models.student.student_number" :danger="0 < errors.length" :danger-text="errors[0]" :disabled="$route.params.id" label="Student ID" class="mb-3"></vs-input>
+                                        </validation-provider>
+                                    </vs-col>
+                                </vs-row>
 
-                            <vs-row>
-                                <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
-                                    <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.student.meta.fname" :danger="0 < errors.length" :danger-text="errors[0]" label="First Name" class="mb-3"></vs-input>
-                                    </validation-provider>
-                                </vs-col>
-                                <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
-                                    <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.student.meta.mname" :danger="0 < errors.length" :danger-text="errors[0]" label="Middle Name" class="mb-3"></vs-input>
-                                    </validation-provider>
-                                </vs-col>
-                                <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
-                                    <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.student.meta.lname" :danger="0 < errors.length" :danger-text="errors[0]" label="Last Name" class="mb-3"></vs-input>
-                                    </validation-provider>
-                                </vs-col>
-                            </vs-row>
+                                <vs-row>
+                                    <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
+                                        <validation-provider rules="required" v-slot="{errors}">
+                                            <vs-input v-model="models.student.metas.fname" :danger="0 < errors.length" :danger-text="errors[0]" label="First Name" class="mb-3"></vs-input>
+                                        </validation-provider>
+                                    </vs-col>
+                                    <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
+                                        <validation-provider rules="required" v-slot="{errors}">
+                                            <vs-input v-model="models.student.metas.mname" :danger="0 < errors.length" :danger-text="errors[0]" label="Middle Name" class="mb-3"></vs-input>
+                                        </validation-provider>
+                                    </vs-col>
+                                    <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
+                                        <validation-provider rules="required" v-slot="{errors}">
+                                            <vs-input v-model="models.student.metas.lname" :danger="0 < errors.length" :danger-text="errors[0]" label="Last Name" class="mb-3"></vs-input>
+                                        </validation-provider>
+                                    </vs-col>
+                                </vs-row>
 
-                            <vs-row>
-                                <vs-col vs-xs="12" vs-sm="12" vs-lg="6">
-                                    <vs-select v-model="models.student.meta.gender" label="Gender" class="mb-3">
-                                        <vs-select-item v-for="(gender, index) in $store.state.options.genders" :key="index" :value="gender.value" :text="gender.text"/>
-                                    </vs-select>
-                                </vs-col>
-                                <vs-col vs-xs="12" vs-sm="12" vs-lg="6">
+                                <vs-row>
+                                    <vs-col vs-xs="12" vs-sm="12" vs-lg="6">
+                                        <vs-select v-model="models.student.metas.gender" label="Gender" class="mb-3">
+                                            <vs-select-item v-for="(gender, index) in $store.state.options.genders" :key="index" :value="gender.value" :text="gender.text"/>
+                                        </vs-select>
+                                    </vs-col>
+                                    <vs-col vs-xs="12" vs-sm="12" vs-lg="6">
 
-                                </vs-col>
-                            </vs-row>
+                                    </vs-col>
+                                </vs-row>
 
-                            <vs-row>
-                                <vs-col>
-                                    <vs-textarea v-model="models.student.meta.address" label="Address" class="mb-0"></vs-textarea>
-                                </vs-col>
-                            </vs-row>
-                        </div>
-                    </vs-card>
-                </vs-col>
-                <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
-                    <vs-card>
-                        <div>
-                            <vs-button @click="$route.params.id ? update() : create()">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
-                            <vs-button @click="$router.push({ name: 'students' })" color="grey" class="float-right">Cancel</vs-button>
-                        </div>
-                    </vs-card>
-                </vs-col>
-            </vs-row>
+                                <vs-row>
+                                    <vs-col>
+                                        <vs-textarea v-model="models.student.metas.address" label="Address" class="mb-0"></vs-textarea>
+                                    </vs-col>
+                                </vs-row>
+                            </div>
+                        </vs-card>
+                    </vs-col>
+                    <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
+                        <vs-card>
+                            <div>
+                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button @click="$router.push({ name: 'students' })" color="grey" class="float-right">Cancel</vs-button>
+                            </div>
+                        </vs-card>
+                    </vs-col>
+                </vs-row>
+            </form>
         </validation-observer>
     </div>
 </template>
@@ -90,7 +92,7 @@
             return {
                 models  : {
                     student     : {
-                        meta        : {
+                        metas       : {
                             gender      : 'm'
                         }
                     }
@@ -125,8 +127,7 @@
             if( this.$route.params.id ) {
                 if( !this.$store.state.apiData.active ) {
                     this.$store.dispatch('getDataBySource', { source: 'students', id: this.$route.params.id }).then(response => {
-                        // this.models.student = response.data.response
-                        this.models.student.student_id = response.data.response.student_id
+                        this.models.student = response.data.response
                     }).catch(_ => {
                         this.$router.push({ name: 'students' })
                     })

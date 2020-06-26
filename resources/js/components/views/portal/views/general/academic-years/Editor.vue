@@ -7,39 +7,36 @@
             </vs-col>
         </vs-row>
 
-        <vs-row>
-            <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
-                <vs-card>
-                    <p class="mb-3">
-                        <router-link :to="{ name: 'academic-years' }">
-                            <small>&laquo; Return to all academic years</small>
-                        </router-link>
-                    </p>
+        <form @submit.prevent="$route.params.id ? update() : create()">
+            <vs-row>
+                <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
+                    <vs-card>
+                        <p class="mb-3">
+                            <router-link :to="{ name: 'academic-years' }">
+                                <small>&laquo; Return to all academic years</small>
+                            </router-link>
+                        </p>
 
-                    <vs-row>
-                        <vs-col vs-xs="12" vs-sm="6" vs-lg="6">
-                            <validation-observer>
-                                <validation-provider rules="required" v-slot="{ errors }">
-                                    <div class="vs-component vs-con-input-label">
-                                        <label for="academic-year" class="vs-input--label">Academic Year</label>
-                                        <v-datepicker v-model="models.academic_year.year" minimumView="year" initialView="year" format="yyyy" input-class="vs-input--input" id="academic-year" class="mb-3"></v-datepicker>
-                                        <span>{{ errors[0] }}</span>
-                                    </div>
-                                </validation-provider>
-                            </validation-observer>
-                        </vs-col>
-                    </vs-row>
-                </vs-card>
-            </vs-col>
-            <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
-                <vs-card>
-                    <div>
-                        <vs-button @click="$route.params.id ? update() : create()" :disabled="!valid">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
-                        <vs-button @click="$router.push({ name: 'academic-years' })" color="grey" class="float-right">Cancel</vs-button>
-                    </div>
-                </vs-card>
-            </vs-col>
-        </vs-row>
+                        <vs-row>
+                            <vs-col vs-xs="12" vs-sm="6" vs-lg="6">
+                                <div class="vs-component vs-con-input-label">
+                                    <label for="academic-year" class="vs-input--label">Academic Year</label>
+                                    <v-datepicker v-model="models.academic_year.year" minimumView="year" initialView="year" format="yyyy" input-class="vs-input--input" id="academic-year" class="mb-3"></v-datepicker>
+                                </div>
+                            </vs-col>
+                        </vs-row>
+                    </vs-card>
+                </vs-col>
+                <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
+                    <vs-card>
+                        <div>
+                            <vs-button button="submit" :disabled="!valid">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                            <vs-button @click="$router.push({ name: 'academic-years' })" color="grey" class="float-right">Cancel</vs-button>
+                        </div>
+                    </vs-card>
+                </vs-col>
+            </vs-row>
+        </form>
     </div>
 </template>
 
@@ -65,7 +62,7 @@
                 this.$store.dispatch('createDataBySource', { source: 'academic_years', data: { year: new Date(this.models.academic_year.year).getFullYear() } }).then(response => {
                     this.$vs.notify({ title: 'Success', text: 'New academic year created.', color: 'success' })
 
-                    this.$router.push({ name: 'academic-year_edit', params: { id: response.data.response.id } })
+                    this.$router.push({ name: 'academic-years' })
                 }).catch(error => {
                     if( 401 == error.response.status ) {
                         this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })

@@ -22,7 +22,7 @@
                         title   : 'General',
                         list    : [
                             { title: 'Academic Years', name: 'academic-years', roles: ['administrator'] },
-                            { title: 'Levels', name: 'levels', roles: ['administrator'] },
+                            { title: 'Grade Levels', name: 'levels', roles: ['administrator'] },
                             { title: 'Strands', name: 'strands', roles: ['administrator'] },
                             { title: 'Tracks', name: 'tracks', roles: ['administrator'] },
                             { title: 'Classes', name: 'classes', roles: ['administrator', 'subject-teacher'] },

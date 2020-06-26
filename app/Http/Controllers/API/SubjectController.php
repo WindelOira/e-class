@@ -112,7 +112,7 @@ class SubjectController extends Controller
     public function destroy($id)
     {
         $subject = Subject::withTrashed()->findOrFail($id);
-        if( $attendance->trashed() ) :
+        if( $subject->trashed() ) :
             $subject->forceDelete();
         else :
             $subject->delete();

@@ -18,12 +18,14 @@
                 </div>
             </template>
             <template slot="thead">
+                <vs-th width="50">#</vs-th>
                 <vs-th v-for="(th, th_key) in headers" :key="th_key">{{ th.text }}</vs-th>
                 <vs-th width="150"></vs-th>
             </template>
 
             <template slot-scope="{data}">
                 <vs-tr v-for="(td, td_key) in data" :key="td_key" >
+                    <vs-td>{{ (td_key + 1) }}</vs-td>
                     <vs-td v-for="(th, th_key) in headers" :key="th_key">
                         <slot :name="th.key" v-bind:td="{ id: data[td_key].id, key: td_key, val: data[td_key][th.key] }">{{ data[td_key][th.key] }}</slot>
                     </vs-td>

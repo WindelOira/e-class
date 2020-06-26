@@ -8,96 +8,98 @@
         </vs-row>
 
         <validation-observer ref="observer">
-            <vs-row>
-                <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
-                    <vs-card>
-                        <p class="mb-3">
-                            <router-link :to="{ name: 'classes' }">
-                                <small>&laquo; Return to all levels</small>
-                            </router-link>
-                        </p>
+            <form @submit.prevent="$route.params.id ? update() : create()">
+                <vs-row>
+                    <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
+                        <vs-card>
+                            <p class="mb-3">
+                                <router-link :to="{ name: 'classes' }">
+                                    <small>&laquo; Return to all levels</small>
+                                </router-link>
+                            </p>
 
-                        <vs-row>
-                            <vs-col vs-xs="12" vs-sm="4" vs-lg="3">
+                            <vs-row>
+                                <vs-col vs-xs="12" vs-sm="4" vs-lg="3">
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-select v-model="models.class.semester" :danger="0 < errors.length" :danger-text="errors[0]" label="Semester" placeholder="Select Semester" class="mb-3">
+                                            <vs-select-item v-for="(sem, index) in $store.state.options.semesters" :key="index" :value="sem.value" :text="sem.text"></vs-select-item>
+                                        </vs-select>
+                                    </validation-provider>
+                                </vs-col>
+                                <vs-col vs-xs="12" vs-sm="" vs-lg="6"></vs-col>
+                                <vs-col vs-xs="12" vs-sm="4" vs-lg="3">
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-select v-model="models.class.academic_year_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Academic Year" placeholder="Select Academic Year" class="mb-2">
+                                            <vs-select-item v-for="(academic_year, index) in $store.state.options.academic_years" :key="index" :value="academic_year.value" :text="academic_year.text"></vs-select-item>
+                                        </vs-select>
+                                    </validation-provider>
+                                    <p v-if="0 == $store.state.options.academic_years.length" class="mb-3">
+                                        No academic years found. Please create <router-link :to="{ name: 'academic-year_new' }">here.</router-link>
+                                    </p>
+                                </vs-col>
+                            </vs-row>
+                            <vs-row>
+                                <vs-col vs-xs="12" vs-sm="7" vs-lg="8">
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-input v-model="models.class.class_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Class ID" class="mb-3"></vs-input>
+                                    </validation-provider>
+                                </vs-col>
+                                <vs-col vs-xs="12" vs-sm="5" vs-lg="4">
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-input v-model="models.class.hours" :danger="0 < errors.length" :danger-text="errors[0]" label="Hours" class="mb-3"></vs-input>
+                                    </validation-provider>
+                                </vs-col>
+                            </vs-row>
+                        </vs-card>
+                    </vs-col>
+                    <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
+                        <vs-card>
+                            <div>
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.class.semester" :danger="0 < errors.length" :danger-text="errors[0]" label="Semester" placeholder="Select Semester" class="mb-3">
-                                        <vs-select-item v-for="(sem, index) in $store.state.options.semesters" :key="index" :value="sem.value" :text="sem.text"></vs-select-item>
+                                    <vs-select v-model="models.class.subject_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Subject" placeholder="Select Subject" class="mb-2">
+                                        <vs-select-item v-for="(subject, index) in $store.state.options.subjects" :key="index" :value="subject.value" :text="subject.text"></vs-select-item>
                                     </vs-select>
                                 </validation-provider>
-                            </vs-col>
-                            <vs-col vs-xs="12" vs-sm="" vs-lg="6"></vs-col>
-                            <vs-col vs-xs="12" vs-sm="4" vs-lg="3">
-                                <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.class.academic_year_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Academic Year" placeholder="Select Academic Year" class="mb-2">
-                                        <vs-select-item v-for="(academic_year, index) in $store.state.options.academic_years" :key="index" :value="academic_year.value" :text="academic_year.text"></vs-select-item>
-                                    </vs-select>
-                                </validation-provider>
-                                <p v-if="0 == $store.state.options.academic_years.length" class="mb-3">
-                                    No academic years found. Please create <router-link :to="{ name: 'academic-year_new' }">here.</router-link>
+                                <p v-if="0 == $store.state.options.subjects.length" class="mb-3">
+                                    No subjects found. Please create <router-link :to="{ name: 'subject_new' }">here.</router-link>
                                 </p>
-                            </vs-col>
-                        </vs-row>
-                        <vs-row>
-                            <vs-col vs-xs="12" vs-sm="7" vs-lg="8">
+
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-input v-model="models.class.class_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Class ID" class="mb-3"></vs-input>
+                                    <vs-select v-model="models.class.track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" placeholder="Select Track" class="mb-2">
+                                        <vs-select-item v-for="(track, index) in $store.state.options.tracks" :key="index" :value="track.value" :text="track.text"></vs-select-item>
+                                    </vs-select>
                                 </validation-provider>
-                            </vs-col>
-                            <vs-col vs-xs="12" vs-sm="5" vs-lg="4">
+                                <p v-if="0 == $store.state.options.tracks.length" class="mb-3">
+                                    No tracks found. Please create <router-link :to="{ name: 'track_new' }">here.</router-link>
+                                </p>
+
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-input v-model="models.class.hours" :danger="0 < errors.length" :danger-text="errors[0]" label="Hours" class="mb-3"></vs-input>
+                                    <vs-select v-model="models.class.section_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Section" placeholder="Select Section" class="mb-2">
+                                        <vs-select-item v-for="(section, index) in $store.state.options.sections" :key="index" :value="section.value" :text="section.text"></vs-select-item>
+                                    </vs-select>
                                 </validation-provider>
-                            </vs-col>
-                        </vs-row>
-                    </vs-card>
-                </vs-col>
-                <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
-                    <vs-card>
-                        <div>
-                            <validation-provider rules="required" v-slot="{errors}">
-                                <vs-select v-model="models.class.subject_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Subject" placeholder="Select Subject" class="mb-2">
-                                    <vs-select-item v-for="(subject, index) in $store.state.options.subjects" :key="index" :value="subject.value" :text="subject.text"></vs-select-item>
-                                </vs-select>
-                            </validation-provider>
-                            <p v-if="0 == $store.state.options.subjects.length" class="mb-3">
-                                No subjects found. Please create <router-link :to="{ name: 'subject_new' }">here.</router-link>
-                            </p>
+                                <p v-if="0 == $store.state.options.sections.length" class="mb-3">
+                                    No sections found. Please create <router-link :to="{ name: 'section_new' }">here.</router-link>
+                                </p>
 
-                            <validation-provider rules="required" v-slot="{errors}">
-                                <vs-select v-model="models.class.track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" placeholder="Select Track" class="mb-2">
-                                    <vs-select-item v-for="(track, index) in $store.state.options.tracks" :key="index" :value="track.value" :text="track.text"></vs-select-item>
-                                </vs-select>
-                            </validation-provider>
-                            <p v-if="0 == $store.state.options.tracks.length" class="mb-3">
-                                No tracks found. Please create <router-link :to="{ name: 'track_new' }">here.</router-link>
-                            </p>
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-select v-model="models.class.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
+                                        <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"></vs-select-item>
+                                    </vs-select>
+                                </validation-provider>
+                                <p v-if="0 == $store.state.options.strands.length">
+                                    No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
+                                </p>
 
-                            <validation-provider rules="required" v-slot="{errors}">
-                                <vs-select v-model="models.class.section_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Section" placeholder="Select Section" class="mb-2">
-                                    <vs-select-item v-for="(section, index) in $store.state.options.sections" :key="index" :value="section.value" :text="section.text"></vs-select-item>
-                                </vs-select>
-                            </validation-provider>
-                            <p v-if="0 == $store.state.options.sections.length" class="mb-3">
-                                No sections found. Please create <router-link :to="{ name: 'section_new' }">here.</router-link>
-                            </p>
+                                <vs-divider class="my-3"/>
 
-                            <validation-provider rules="required" v-slot="{errors}">
-                                <vs-select v-model="models.class.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
-                                    <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"></vs-select-item>
-                                </vs-select>
-                            </validation-provider>
-                            <p v-if="0 == $store.state.options.strands.length">
-                                No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
-                            </p>
-
-                            <vs-divider class="my-3"/>
-
-                            <vs-button @click="$route.params.id ? update() : create()">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
-                            <vs-button @click="$router.push({ name: 'classes' })" color="grey" class="float-right">Cancel</vs-button>
-                        </div>
-                    </vs-card>
-                </vs-col>
-            </vs-row>
+                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button @click="$router.push({ name: 'classes' })" color="grey" class="float-right">Cancel</vs-button>
+                            </div>
+                        </vs-card>
+                    </vs-col>
+                </vs-row>
+            </form>
         </validation-observer>
     </div>
 </template>
@@ -126,7 +128,7 @@
                     this.$store.dispatch('createDataBySource', { source: 'classes', data: this.models.class }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New class created.', color: 'success' })
 
-                        this.$router.push({ name: 'class_edit', params: { id: response.data.response.id } })
+                        this.$router.push({ name: 'classes' })
                     })
                 })
             },

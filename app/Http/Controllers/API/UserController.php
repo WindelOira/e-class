@@ -185,7 +185,17 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         return response()->json([
-            'response'      => $user
+            'response'      => [
+                'id'            => $user->id,
+                'employee_id'   => $user->employee_id,
+                'email'         => $user->email,
+                'name'          => $user->name,
+                'role'          => $user->role,
+                'metas'         => 0 < count($user->metas) ? Arr::pluck($user->metas, 'value', 'key') : [
+                    'fname'         => '',
+                    'lname'         => ''
+                ]
+            ]
         ], 200);
     }
 

@@ -8,33 +8,35 @@
         </vs-row>
 
         <validation-observer ref="observer">
-            <vs-row>
-                <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
-                    <vs-card>
-                        <p class="mb-3">
-                            <router-link :to="{ name: 'tracks' }">
-                                <small>&laquo; Return to all tracks</small>
-                            </router-link>
-                        </p>
+            <form @submit.prevent="$route.params.id ? update() : create()">
+                <vs-row>
+                    <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
+                        <vs-card>
+                            <p class="mb-3">
+                                <router-link :to="{ name: 'tracks' }">
+                                    <small>&laquo; Return to all tracks</small>
+                                </router-link>
+                            </p>
 
-                        <vs-row>
-                            <vs-col>
-                                <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-input v-model="models.track.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Track"></vs-input>
-                                </validation-provider>
-                            </vs-col>
-                        </vs-row>
-                    </vs-card>
-                </vs-col>
-                <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
-                    <vs-card>
-                        <div>
-                            <vs-button @click="$route.params.id ? update() : create()">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
-                            <vs-button @click="$router.push({ name: 'tracks' })" color="grey" class="float-right">Cancel</vs-button>
-                        </div>
-                    </vs-card>
-                </vs-col>
-            </vs-row>
+                            <vs-row>
+                                <vs-col>
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-input v-model="models.track.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Track"></vs-input>
+                                    </validation-provider>
+                                </vs-col>
+                            </vs-row>
+                        </vs-card>
+                    </vs-col>
+                    <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
+                        <vs-card>
+                            <div>
+                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button @click="$router.push({ name: 'tracks' })" color="grey" class="float-right">Cancel</vs-button>
+                            </div>
+                        </vs-card>
+                    </vs-col>
+                </vs-row>
+            </form>
         </validation-observer>
     </div>
 </template>
@@ -63,7 +65,7 @@
                     this.$store.dispatch('createDataBySource', { source: 'tracks', data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New track created.', color: 'success' })
 
-                        this.$router.push({ name: 'track_edit', params: { id: response.data.response.id } })
+                        this.$router.push({ name: 'tracks' })
                     })
                 })
             },

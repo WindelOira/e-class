@@ -6,7 +6,7 @@
             </vs-col>
         </vs-row>
 
-        <app-table :headers="headers" source="levels" title="Levels"></app-table>
+        <app-table :headers="headers" source="levels" title="Grade Levels"></app-table>
     </div>
 </template>
 
@@ -20,7 +20,7 @@
         data() {
             return {
                 headers     : [
-                    { key: 'name', text: 'Level' }
+                    { key: 'name', text: 'Grade Level' }
                 ]
             }
         }

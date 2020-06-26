@@ -6,7 +6,11 @@
             </vs-col>
         </vs-row>
         
-        <app-table :headers="headers" source="academic_years" title="Academic Years"></app-table>
+        <app-table :headers="headers" source="academic_years" alias="academic-years" title="Academic Years">
+            <template v-slot:year="year">
+                {{ year.td.val }} - {{ year.td.val + 1 }}
+            </template>
+        </app-table>
     </div>
 </template>
 

@@ -40,7 +40,7 @@ class ClassesController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        if( !in_array($user->role, ['administrator', 'subject-teacher']) )
+        if( $user && !in_array($user->role, ['administrator', 'subject-teacher']) )
             return response()->json([
                 'response'      => 'Unauthorised'
             ], 401);
@@ -103,7 +103,7 @@ class ClassesController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user();
-        if( !in_array($user->role, ['administrator', 'subject-teacher']) )
+        if( $user && !in_array($user->role, ['administrator', 'subject-teacher']) )
             return response()->json([
                 'response'      => 'Unauthorised'
             ], 401);

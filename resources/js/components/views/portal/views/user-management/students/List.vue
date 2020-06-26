@@ -20,7 +20,7 @@
         data() {
             return {
                 headers     : [
-                    { key: 'student_id', text: 'Student LRN' },
+                    { key: 'student_number', text: 'Student LRN' },
                     { key: 'name', text: 'Name' },
                 ]
             }

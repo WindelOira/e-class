@@ -7,9 +7,7 @@
         </vs-row>
         
         <app-table :headers="headers" source="subjects" title="Subjects">
-            <template v-slot:subject_track_id="subject_track">
-                <router-link :to="{ name: 'subject-track_edit', params: { id: subject_track.td.val.id } }">{{ subject_track.td.val.name }}</router-link>
-            </template>
+            <template v-slot:subject_track_id="subject_track">{{ subject_track.td.val.name }}</template>
         </app-table>
     </div>
 </template>

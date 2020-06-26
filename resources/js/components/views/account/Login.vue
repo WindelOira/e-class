@@ -12,15 +12,17 @@
                             <h3 class="primary-text">Login</h3>
                         </div>
                         <div>
-                            <validation-provider rules="required" v-slot="{errors}">
-                                <vs-input v-model="models.employee_id" :danger="0 < errors.length" danger-text="Enter your employee ID." label="Employee ID" class="mb-3"></vs-input>
-                            </validation-provider>
+                            <form @submit.prevent="login">
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-input v-model="models.employee_id" :danger="0 < errors.length" danger-text="Enter your employee ID." label="Employee ID" class="mb-3"></vs-input>
+                                </validation-provider>
 
-                            <validation-provider rules="required" v-slot="{errors}">
-                                <vs-input v-model="models.password" :danger="0 < errors.length" danger-text="Enter your password." label="Password" type="password" class="mb-3"></vs-input>
-                            </validation-provider>
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-input v-model="models.password" :danger="0 < errors.length" danger-text="Enter your password." label="Password" type="password" class="mb-3"></vs-input>
+                                </validation-provider>
 
-                            <vs-button @click="login">Login</vs-button>
+                                <vs-button button="submit">Login</vs-button>
+                            </form>
                         </div>
                     </vs-card>
                 </vs-col>

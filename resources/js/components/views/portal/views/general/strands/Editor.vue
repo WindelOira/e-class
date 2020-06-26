@@ -8,35 +8,37 @@
         </vs-row>
 
         <validation-provider ref="observer">
-            <vs-row>
-                <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
-                    <vs-card>
-                        <p class="mb-3">
-                            <router-link :to="{ name: 'strands' }">
-                                <small>&laquo; Return to all strands</small>
-                            </router-link>
-                        </p>
-                        
-                        <vs-row>
-                            <vs-col>
-                                <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-input v-model="models.strand.code" :danger="0 < errors.length" :danger-text="errors[0]" label="Code" class="mb-3"></vs-input>
-                                </validation-provider>
-                                
-                                <vs-textarea v-model="models.strand.description" label="Description"></vs-textarea>
-                            </vs-col>
-                        </vs-row>
-                    </vs-card>
-                </vs-col>
-                <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
-                    <vs-card>
-                        <div>
-                            <vs-button @click="$route.params.id ? update() : create()">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
-                            <vs-button @click="$router.push({ name: 'strands' })" color="grey" class="float-right">Cancel</vs-button>
-                        </div>
-                    </vs-card>
-                </vs-col>
-            </vs-row>
+            <form @submit.prevent="$route.params.id ? update() : create()">
+                <vs-row>
+                    <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
+                        <vs-card>
+                            <p class="mb-3">
+                                <router-link :to="{ name: 'strands' }">
+                                    <small>&laquo; Return to all strands</small>
+                                </router-link>
+                            </p>
+                            
+                            <vs-row>
+                                <vs-col>
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-input v-model="models.strand.code" :danger="0 < errors.length" :danger-text="errors[0]" label="Code" class="mb-3"></vs-input>
+                                    </validation-provider>
+                                    
+                                    <vs-textarea v-model="models.strand.description" label="Description"></vs-textarea>
+                                </vs-col>
+                            </vs-row>
+                        </vs-card>
+                    </vs-col>
+                    <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
+                        <vs-card>
+                            <div>
+                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button @click="$router.push({ name: 'strands' })" color="grey" class="float-right">Cancel</vs-button>
+                            </div>
+                        </vs-card>
+                    </vs-col>
+                </vs-row>
+            </form>
         </validation-provider>
     </div>
 </template>
@@ -65,7 +67,7 @@
                     this.$store.dispatch('createDataBySource', { source: 'strands', data: this.models.strand }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New strand created.', color: 'success' })
 
-                        this.$router.push({ name: 'strand_edit', params: { id: response.data.response.id } })
+                        this.$router.push({ name: 'strands' })
                     })
                 })
             },
