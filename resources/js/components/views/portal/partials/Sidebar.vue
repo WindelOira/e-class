@@ -22,13 +22,13 @@
                         title   : 'General',
                         list    : [
                             { title: 'Academic Years', name: 'academic-years', roles: ['administrator'] },
-                            { title: 'Grade Levels', name: 'levels', roles: ['administrator'] },
                             { title: 'Strands', name: 'strands', roles: ['administrator'] },
                             { title: 'Tracks', name: 'tracks', roles: ['administrator'] },
-                            { title: 'Classes', name: 'classes', roles: ['administrator', 'subject-teacher'] },
+                            { title: 'Grade Levels', name: 'levels', roles: ['administrator'] },
+                            { title: 'Subjects', name: 'subjects', roles: ['administrator'] },
+                            { title: 'Subject Tracks', name: 'subject-tracks', roles: ['administrator'] },
                             { title: 'Sections', name: 'sections', roles: ['administrator', 'adviser', 'subject-teacher'] },
-                            { title: 'Subject', name: 'subjects', roles: ['administrator'] },
-                            { title: 'Subject Tracks', name: 'subject-tracks', roles: ['administrator'] }
+                            { title: 'Classes', name: 'classes', roles: ['administrator', 'subject-teacher'] }
                         ],
                         roles   : [
                             'administrator', 'adviser', 'subject-teacher'
