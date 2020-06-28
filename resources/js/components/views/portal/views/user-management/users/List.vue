@@ -41,7 +41,7 @@
         },
         methods     : {
             filter(type) {
-                this.$store.dispatch('getDatasBySource', { source: 'users', status: 'published', filters: `${type}_${this.models.filters[type]}` })
+                this.$store.dispatch('getDatasBySource', { source: 'users', status: 'published', filters: `${type}=${this.models.filters[type]}` })
             }
         },
         computed    : {

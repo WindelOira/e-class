@@ -38,12 +38,19 @@
                         <vs-card>
                             <div>
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.subject.subject_track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" placeholder="Select Track" class="mb-2">
-                                        <vs-select-item v-for="(subject_track, index) in $store.state.options.subject_tracks" :key="index" :value="subject_track.value" :text="subject_track.text"/>
+                                    <vs-select v-model="models.subject.semester" :danger="0 < errors.length" :danger-text="errors[0]" label="Semester" placeholder="Select Semester" class="mb-2">
+                                        <vs-select-item value="first" text="First"/>
+                                        <vs-select-item value="second" text="Second"/>
                                     </vs-select>
                                 </validation-provider>
-                                <p v-if="0 == $store.state.options.subject_tracks.length">
-                                    No subject tracks found. Please create <router-link :to="{ name: 'subject-track_new' }">here.</router-link>
+
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-select v-model="models.subject.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
+                                        <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"/>
+                                    </vs-select>
+                                </validation-provider>
+                                <p v-if="0 == $store.state.options.strands.length">
+                                    No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
                                 </p>
 
                                 <vs-divider class="my-3"/>
@@ -105,7 +112,7 @@
             }
         },
         created() {
-            this.$store.dispatch('getSelectOptions', { source: 'subject_tracks' })
+            this.$store.dispatch('getSelectOptions', { source: 'strands' })
             
             if( this.$route.params.id ) {
                 if( !this.$store.state.apiData.active ) {

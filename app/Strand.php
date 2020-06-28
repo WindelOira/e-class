@@ -26,6 +26,13 @@ class Strand extends Model
     }
 
     /**
+     * Get the subjects for the strand.
+     */
+    public function subjects() {
+        return $this->hasMany('App\Subject');
+    }
+
+    /**
      * Get sections that belong to the strand.
      */
     public function sections() {

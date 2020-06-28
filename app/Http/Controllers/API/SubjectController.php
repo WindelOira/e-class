@@ -14,22 +14,36 @@ class SubjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($status)
+    public function index($status, $filters = null)
     {
-        $data = [];
-        if( 'published' == $status ) :
-            $subjects = Subject::whereNull('deleted_at')->get();
-        else :
-            $subjects = Subject::onlyTrashed()->get();
+        $filters = $filters ? explode(',', $filters) : false;
+        $where = [];
+        
+        if( $filters ) :
+            foreach( $filters as $filter ) :
+                $filter = explode('=', $filter);
+
+                $where[] = [ $filter[0], '=', $filter[1] ];
+            endforeach;
         endif;
 
-        foreach( $subjects as $key => $subject ) :
-            $data[$key] = $subject;
-            $data[$key]['tracks'] = $subject->tracks;
-        endforeach;
+        if( 'published' == $status ) :
+            $subjects = Subject::whereNull('deleted_at')
+                            ->where($where)
+                            ->get();
+        else :
+            $subjects = Subject::onlyTrashed()
+                            ->where($where)
+                            ->get();
+        endif;
+
+        // foreach( $subjects as $key => $subject ) :
+        //     $data[$key] = $subject;
+        //     $data[$key]['tracks'] = $subject->tracks;
+        // endforeach;
 
         return response()->json([
-            'response'      => $data
+            'response'      => $subjects
         ], 200);
     }
 
@@ -86,11 +100,12 @@ class SubjectController extends Controller
         return response()->json([
             'response'      => [
                 'id'                    => $subject->id,
-                'subject_track_id'      => $subject->subject_track_id->id,
-                'subject_tracks'        => $subject->subject_track_id,
+                'strand_id'             => $subject->strand_id->id,
+                'strand'                => $subject->strand_id,
                 'name'                  => $subject->name,
                 'description'           => $subject->description,
-                'hours'                 => $subject->hours
+                'hours'                 => $subject->hours,
+                'semester'              => $subject->semester,
             ]
         ], 200);
     }
@@ -107,7 +122,7 @@ class SubjectController extends Controller
         $duplicates = Subject::where('id', '!=', $id)
                             ->where(function($query) use ($request) {
                                 $query->where('name', '=', $request->input('name'))
-                                        ->orWhere('description', '=', $request->input('description'));
+                                    ->orWhere('description', '=', $request->input('description'));
                             })
                             ->get();
 

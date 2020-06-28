@@ -128,7 +128,7 @@ class UserController extends Controller
         
         if( $filters ) :
             foreach( $filters as $filter ) :
-                $filter = explode('_', $filter);
+                $filter = explode('=', $filter);
 
                 $where[] = [ $filter[0], '=', $filter[1] ];
             endforeach;

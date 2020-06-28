@@ -15,6 +15,7 @@
                     <h3 class="mb-1">{{ title }}</h3>
                     <div v-if="filters" class="my-3">
                         <slot name="filters"></slot>
+                        <vs-button @click="getDatasBySource(mode)" type="flat" class="p-1 mt-2">Clear Filters</vs-button>
                     </div>
                     <vs-button @click="getDatasBySource('published')" type="flat" class="py-1 px-2">Published</vs-button>
                     <span class="mx-1">|</span>

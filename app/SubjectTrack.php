@@ -17,11 +17,4 @@ class SubjectTrack extends Model
     protected $fillable = [
         'name', 'written_work', 'performance_task', 'quarterly_assessment',
     ];
-
-    /**
-     * Get the subjects for the subject track.
-     */
-    public function subjects() {
-        return $this->hasMany('App\Subject');
-    }
 }

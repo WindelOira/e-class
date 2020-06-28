@@ -7,6 +7,9 @@ const getters = {
     },
     apiData     : state => {
         return state.apiData
+    },
+    options     : state => {
+        return state.options
     }
 }
 
