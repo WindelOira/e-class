@@ -36,9 +36,7 @@
                                         </validation-provider>
                                     </vs-col>
                                     <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
-                                        <validation-provider rules="required" v-slot="{errors}">
-                                            <vs-input v-model="models.student.metas.mname" :danger="0 < errors.length" :danger-text="errors[0]" label="Middle Name" class="mb-3"></vs-input>
-                                        </validation-provider>
+                                        <vs-input v-model="models.student.metas.mname" label="Middle Name (Optional)" class="mb-3"></vs-input>
                                     </vs-col>
                                     <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
                                         <validation-provider rules="required" v-slot="{errors}">
@@ -69,6 +67,15 @@
                     <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
                         <vs-card>
                             <div>
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-select v-model="models.student.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
+                                        <vs-select-item v-for="(strand, index) in options.strands" :key="index" :value="strand.value" :text="strand.text"/>
+                                    </vs-select>
+                                </validation-provider>
+                                <p v-if="0 == options.strands.length">
+                                    No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
+                                </p>
+
                                 <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                                 <vs-button @click="$router.push({ name: 'students' })" color="grey" class="float-right">Cancel</vs-button>
                             </div>
@@ -81,6 +88,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
     export default {
@@ -92,6 +100,7 @@
             return {
                 models  : {
                     student     : {
+                        name        : '',
                         metas       : {
                             gender      : 'm'
                         }
@@ -101,6 +110,8 @@
         },
         methods         : {
             create() {
+                this.models.student.name = `${this.models.student.metas.fname} ${this.models.student.metas.lname}`
+                
                 this.$refs.observer.validate().then(success => {
                     if( !success )
                         return false;
@@ -113,6 +124,8 @@
                 })
             },
             update() {
+                this.models.student.name = `${this.models.student.metas.fname} ${this.models.student.metas.lname}`
+
                 this.$refs.observer.validate().then(success => {
                     if( !success )
                         return false;
@@ -125,7 +138,14 @@
                 })
             }
         },
+        computed    : {
+            ...mapGetters([
+                'options'
+            ])
+        },
         created() {
+            this.$store.dispatch('getSelectOptions', { source: 'strands' })
+
             if( this.$route.params.id ) {
                 if( !this.$store.state.apiData.active ) {
                     this.$store.dispatch('getDataBySource', { source: 'students', id: this.$route.params.id }).then(response => {

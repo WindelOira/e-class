@@ -6,7 +6,9 @@
             </vs-col>
         </vs-row>
 
-        <app-table :headers="headers" source="students" title="Students"></app-table>
+        <app-table :headers="headers" source="students" title="Students">
+            <template v-slot:strand_id="strand">{{ strand.td.val.code }}</template>
+        </app-table>
     </div>
 </template>
 
@@ -21,6 +23,7 @@
             return {
                 headers     : [
                     { key: 'student_number', text: 'Student LRN' },
+                    { key: 'strand_id', text: 'Strand' },
                     { key: 'name', text: 'Name' },
                 ]
             }

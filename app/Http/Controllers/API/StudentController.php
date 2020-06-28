@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Student;
+use App\Meta;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class StudentController extends Controller
 {
@@ -13,12 +15,27 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($status)
+    public function index($status, $filters = null)
     {
+        $filters = $filters ? explode(',', $filters) : false;
+        $where = [];
+        
+        if( $filters ) :
+            foreach( $filters as $filter ) :
+                $filter = explode('=', $filter);
+
+                $where[] = [ $filter[0], '=', $filter[1] ];
+            endforeach;
+        endif;
+
         if( 'published' == $status ) :
-            $students = Student::whereNull('deleted_at')->get();
+            $students = Student::whereNull('deleted_at')
+                    ->where($where)
+                    ->get();
         else :
-            $students = Student::onlyTrashed()->get();
+            $students = Student::onlyTrashed()
+            ->where($where)
+                    ->get();
         endif;
 
         return response()->json([
@@ -34,12 +51,18 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
+        $student = Student::create($request->except('metas'));
 
-        $student = Student::create([
-            'student_number'    => $request->input('student_number'),
-            'name'              => $input['metas']['fname'] .' '. $input['metas']['lname']
-        ]);
+        if( 0 < count($request->input('metas')) ) :
+            foreach( $request->input('metas') as $key => $value ) :
+                $meta = Meta::create([
+                    'key'       => $key,
+                    'value'     => $value
+                ]);
+
+                $meta->students()->syncWithoutDetaching([$student->id]);
+            endforeach;
+        endif;
 
         return response()->json([
             'response'      => $student
@@ -75,6 +98,7 @@ class StudentController extends Controller
         return response()->json([
             'response'      => [
                 'id'                => $student->id,
+                'strand_id'         => $student->strand_id,
                 'student_number'    => $student->student_number,
                 'name'              => $student->name,
                 'metas'             => 0 < count($student->metas) ? Arr::pluck($student->metas, 'value', 'key') : [
@@ -96,8 +120,35 @@ class StudentController extends Controller
     public function update(Request $request, $id)
     {
         $student = Student::findOrFail($id);
-        $student->name = $request->input('name');
-        $student->save();
+        $student->update($request->except('metas'));
+
+        if( 0 < count($request->input('metas')) ) :
+            if( 0 < count($student->metas) ) :
+                foreach( $student->metas as $meta ) :
+                    if( array_key_exists($meta->key, $request->input('metas')) ) :
+                        $meta->update([
+                            'value'     => $request->input('metas.'. $meta->key)
+                        ]);
+                    else :
+                        $meta = Meta::create([
+                            'key'       => $key,
+                            'value'     => $value
+                        ]);
+
+                        $meta->students()->syncWithoutDetaching([$id]);
+                    endif;
+                endforeach;
+            else :
+                foreach( $request->input('metas') as $key => $value ) :
+                    $meta = Meta::create([
+                        'key'       => $key,
+                        'value'     => $value
+                    ]);
+
+                    $meta->students()->syncWithoutDetaching([$id]);
+                endforeach;
+            endif;
+        endif;
 
         return response()->json([
             'response'      => $student

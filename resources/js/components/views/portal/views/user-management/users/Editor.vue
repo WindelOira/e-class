@@ -40,9 +40,7 @@
                                         </validation-provider>
                                     </vs-col>
                                     <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
-                                        <validation-provider rules="required" v-slot="{errors}">
-                                            <vs-input v-model="models.user.metas.mname" :danger="0 < errors.length" :danger-text="errors[0]" label-placeholder="Middle Name" class="mb-3"></vs-input>
-                                        </validation-provider>
+                                        <vs-input v-model="models.user.metas.mname" label-placeholder="Middle Name (Optional)" class="mb-3"></vs-input>
                                     </vs-col>
                                     <vs-col vs-xs="12" vs-sm="12" vs-lg="4">
                                         <validation-provider rules="required" v-slot="{errors}">
@@ -76,10 +74,14 @@
 
                                 <vs-row>
                                     <vs-col vs-xs="12" vs-sm="6" vs-lg="6">
-                                        <vs-input v-model="models.user.password" label-placeholder="Password" type="password"></vs-input>
+                                        <validation-provider :rules="$route.params.id ? '' : 'required'" v-slot="{errors}" vid="password">
+                                            <vs-input v-model="models.user.password" :danger="0 < errors.length" :danger-text="errors[0]" label-placeholder="Password" type="password"></vs-input>
+                                        </validation-provider>
                                     </vs-col>
                                     <vs-col vs-xs="12" vs-sm="6" vs-lg="6">
-                                        <vs-input v-model="models.user.c_password" label-placeholder="Confirm Password" type="password"></vs-input>
+                                        <validation-provider :rules="$route.params.id ? 'confirmed:password' : 'required|confirmed:password'" v-slot="{errors}">
+                                            <vs-input v-model="models.user.c_password" :danger="0 < errors.length" :danger-text="errors[0]" label-placeholder="Confirm Password" type="password"></vs-input>
+                                        </validation-provider>
                                     </vs-col>
                                 </vs-row>
                             </div>
@@ -119,19 +121,16 @@
         },
         methods     : {
             create() {
-                if( this.models.user.password != this.models.user.c_password )
-                    this.$vs.notify({ title: 'Error', text: 'Passwords does not match.', color: 'danger' })
-                else 
-                    this.$refs.observer.validate().then(success => {
-                        if( !success )
-                            return false;
+                this.$refs.observer.validate().then(success => {
+                    if( !success )
+                        return false;
 
-                        this.$store.dispatch('createDataBySource', { source: 'users', data: this.models.user }).then(response => {
-                            this.$vs.notify({ title: 'Success', text: 'New '+ this.models.user.role +' created.', color: 'success' })
+                    this.$store.dispatch('createDataBySource', { source: 'users', data: this.models.user }).then(response => {
+                        this.$vs.notify({ title: 'Success', text: 'New '+ this.models.user.role +' created.', color: 'success' })
 
-                            this.$router.push({ name: 'users' })
-                        })
+                        this.$router.push({ name: 'users' })
                     })
+                })
             },
             update() {
                 this.$refs.observer.validate().then(success => {

@@ -40,6 +40,13 @@ class Strand extends Model
     }
 
     /**
+     * Get the students for the strand
+     */
+    public function students() {
+        return $this->hasMany('App\Students');
+    }
+
+    /**
      * Get the stramd's track.
      * 
      * @param   string  $value

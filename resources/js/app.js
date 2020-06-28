@@ -9,11 +9,15 @@ import Vue from 'vue'
 import Vuesax from 'vuesax'
 import VueMoment from 'vue-moment'
 import { extend } from 'vee-validate'
-import { required } from 'vee-validate/dist/rules'
+import { required, confirmed } from 'vee-validate/dist/rules'
 
 extend('required', {
     ...required,
-    message: 'This field is required'
+    message     : 'This field is required'
+})
+extend('confirmed', {
+    ...confirmed,
+    message     : 'Please confirm'
 })
 
 import Router from 'JS/router/router.js'

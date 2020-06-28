@@ -15,14 +15,14 @@ class Student extends Model
      * @var array
      */
     protected $fillable = [
-        'student_number', 'name',
+        'section_id', 'strand_id', 'student_number', 'name',
     ];
 
     /**
      * Get all of the metas for the student.
      */
     public function metas() {
-        return $this->morphToMany('App\Student', 'metaable');
+        return $this->morphToMany('App\Meta', 'metaable');
     }
 
     /**
@@ -37,5 +37,24 @@ class Student extends Model
      */
     public function section() {
         return $this->belongsTo('App\Section');
+    }
+
+    /**
+     * Get strand that belongs to student.
+     */
+    public function strand() {
+        return $this->belongsTo('App\Strand');
+    }
+
+    /**
+     * Get the subject's strand.
+     * 
+     * @param   string  $value
+     * @return  object
+     */
+    public function getStrandIdAttribute($value) {
+        $strand = Strand::find($value);
+
+        return $strand;
     }
 }

@@ -160,7 +160,7 @@ class UserController extends Controller
         $user = User::create([
             'employee_id'   => $request->input('employee_id'),
             'role'          => $request->input('role'),
-            'name'          => $request->input('meta')['fname'],
+            'name'          => $request->input('metas.fname') .' '. $request->input('metas.lname'),
             'email'         => $request->input('email'),
             'password'      => bcrypt($request->input('password'))
         ]);

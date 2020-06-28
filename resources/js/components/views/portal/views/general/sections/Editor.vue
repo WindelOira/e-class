@@ -56,7 +56,7 @@
                         <vs-card>
                             <div>
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.section.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
+                                    <vs-select v-model="models.section.strand_id" @change="getStudents(models.section.strand_id)" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
                                         <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"/>
                                     </vs-select>
                                 </validation-provider>
@@ -137,6 +137,13 @@
                         this.$router.push({ name: 'sections' })
                     })
                 })
+            },
+            getStudents(strand = false) {
+                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: strand ? `strand_id=${strand}` : null, no_commit: true }).then(response => {
+                    this.students = response.data.response.filter(student => {
+                        return !student.section_id
+                    })
+                })
             }
         },
         created() {
@@ -160,11 +167,7 @@
                     this.students = this.$store.state.apiData.active.students
                 }
             } else {
-                this.$store.dispatch('getDatasBySource', { source: 'students', no_commit: true }).then(response => {
-                    this.students = response.data.response.filter(student => {
-                        return !student.section_id
-                    })
-                })
+                this.getStudents()
             }
         }
     }
