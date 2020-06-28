@@ -23,8 +23,11 @@
                     </vs-col>
                 </vs-row>
             </template>
-            <template v-slot:strand_id="strand">{{ strand.td.val.code }}</template>
-            <template v-slot:semester="semester">{{ semester.td.val[0].toUpperCase() }}{{ semester.td.val.substr(1) }}</template>
+            <template v-slot:subject_track_id="subject_track">{{ subject_track.td.val ? subject_track.td.val.name : '' }}</template>
+            <template v-slot:strand_id="strand">{{ strand.td.val ? strand.td.val.code : '' }}</template>
+            <template v-slot:semester="semester">
+                <span v-if="semester.td.val">{{ semester.td.val[0].toUpperCase() }}{{ semester.td.val.substr(1) }}</span>
+            </template>
         </app-table>
     </div>
 </template>
@@ -41,6 +44,7 @@
             return {
                 headers     : [
                     { key: 'name', text: 'Subject' },
+                    { key: 'subject_track_id', text: 'Subject Track' },
                     { key: 'strand_id', text: 'Strand' },
                     { key: 'hours', text: 'Hours per Semester' },
                     { key: 'semester', text: 'Semester' }

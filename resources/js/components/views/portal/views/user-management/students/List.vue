@@ -7,7 +7,7 @@
         </vs-row>
 
         <app-table :headers="headers" source="students" title="Students">
-            <template v-slot:strand_id="strand">{{ strand.td.val.code }}</template>
+            <template v-slot:strand_id="strand">{{ strand.td.val ? strand.td.val.code : '' }}</template>
         </app-table>
     </div>
 </template>

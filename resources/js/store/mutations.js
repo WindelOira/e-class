@@ -59,6 +59,9 @@ const mutations = {
 
         state.options[payload.key] = []
         payload.options.forEach(option => { 
+            if( typeof option === 'undefined' ) 
+                return false;
+                
             if( state.options[payload.key].indexOf(option) < 0 ) {
                 state.options[payload.key].push({
                     text    : option.name ? option.name : (option.code ? option.code : option.year),

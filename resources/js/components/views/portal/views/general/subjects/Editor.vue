@@ -45,6 +45,15 @@
                                 </validation-provider>
 
                                 <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-select v-model="models.subject.subject_track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Subject Track" placeholder="Select Subject Track" class="mb-2">
+                                        <vs-select-item v-for="(subject_track, index) in $store.state.options.subject_tracks" :key="index" :value="subject_track.value" :text="subject_track.text"/>
+                                    </vs-select>
+                                </validation-provider>
+                                <p v-if="0 == $store.state.options.strands.length">
+                                    No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
+                                </p>
+
+                                <validation-provider rules="required" v-slot="{errors}">
                                     <vs-select v-model="models.subject.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
                                         <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"/>
                                     </vs-select>
@@ -112,6 +121,7 @@
             }
         },
         created() {
+            this.$store.dispatch('getSelectOptions', { source: 'subject_tracks' })
             this.$store.dispatch('getSelectOptions', { source: 'strands' })
             
             if( this.$route.params.id ) {

@@ -100,6 +100,7 @@ class SubjectController extends Controller
         return response()->json([
             'response'      => [
                 'id'                    => $subject->id,
+                'subject_track'         => $subject->subject_track_id,
                 'strand_id'             => $subject->strand_id->id,
                 'strand'                => $subject->strand_id,
                 'name'                  => $subject->name,

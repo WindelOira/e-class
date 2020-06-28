@@ -7,11 +7,13 @@
         </vs-row>
         
         <app-table :headers="headers" source="classes" title="Classes">
-            <template v-slot:academic_year_id="academic_year">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</template>
-            <template v-slot:subject_id="subject">{{ subject.td.val.name }}</template>
-            <template v-slot:track_id="track">{{ track.td.val.name }}</template>
-            <template v-slot:section_id="section">{{ section.td.val.name }}</template>
-            <template v-slot:strand_id="strand">{{ strand.td.val.code }}</template>
+            <template v-slot:academic_year_id="academic_year">
+                <span v-if="academic_year.td.val">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</span>
+            </template>
+            <template v-slot:subject_id="subject">{{ subject.td.val ? subject.td.val.name : '' }}</template>
+            <template v-slot:track_id="track">{{ track.td.val ? track.td.val.name : '' }}</template>
+            <template v-slot:section_id="section">{{ section.td.val ? section.td.val.name : '' }}</template>
+            <template v-slot:strand_id="strand">{{ strand.td.val ? strand.td.val.code : '' }}</template>
             <template v-slot:semester="semester">{{ 1 == semester.td.val ? 'First' : 'Second' }} Semester</template>
             <template v-if="'teacher' == user.role" v-slot:actions>
                 <span></span>

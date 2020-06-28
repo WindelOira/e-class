@@ -287,19 +287,25 @@
                 this.vars.popup.quarter = quarter
                 this.vars.popup.gradeIndex = index
             },
-            getSectionStudents(sectionId) {
+            getSectionStudents(sectionId = false) {
+                sectionId = !sectionId ? this.models.grading_sheet.section_id.id : sectionId
+
                 this.$store.dispatch('getDataBySource', { source: 'sections', id: sectionId, no_commit: true }).then(response => {
                     // this.models.grading_sheet.students = response.data.response.students
                 })
             },
-            getSubjectTracks(subjectId) {
-                this.$store.dispatch('getDataBySource', { source: 'subjects', id: subjectId, no_commit: true }).then(response => {
-                    this.models.grading_sheet.subject_track_id = response.data.response.subject_track_id
+            getSubjectTracks(subjectId = false) {
+                subjectId = !subjectId ? this.models.grading_sheet.subject_id.id : subjectId
 
-                    this.$store.commit('SET_OPTIONS', {key: 'subject_tracks', options: [response.data.response.subject_tracks]})
+                this.$store.dispatch('getDataBySource', { source: 'subjects', id: subjectId, no_commit: true }).then(response => {
+                    this.models.grading_sheet.subject_track_id = response.data.response.subject_track.id
+
+                    this.$store.commit('SET_OPTIONS', { key: 'subject_tracks', options: [response.data.response.subject_track] })
                 })
             },
-            getSubjectTrackCols(subjectTrackId) {
+            getSubjectTrackCols(subjectTrackId = false) {
+                subjectTrackId = !subjectTrackId ? this.models.grading_sheet.subject_track_id : subjectTrackId
+
                 this.$store.dispatch('getDataBySource', { source: 'subject_tracks', id: subjectTrackId, no_commit: true }).then(response => {
                     this.vars.headers.written_work.percentage = response.data.response.written_work
                     this.vars.headers.performance_task.percentage = response.data.response.performance_task
@@ -632,7 +638,7 @@
                     }
                 }
             } else {
-                this.$store.dispatch('getDatasBySource', { source: 'students', no_commit: true }).then(response => {
+                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', no_commit: true }).then(response => {
                     response.data.response.forEach(student => {
                         this.models.grading_sheet.grades.push({
                             grading_sheet_id        : null,

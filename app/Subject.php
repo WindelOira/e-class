@@ -15,8 +15,15 @@ class Subject extends Model
      * @var array
      */
     protected $fillable = [
-        'strand_id', 'name', 'description', 'hours', 'semester', 
+        'subject_track_id', 'strand_id', 'name', 'description', 'hours', 'semester', 
     ];
+
+    /**
+     * Get the subject track that owns the subject.
+     */
+    public function subject_track() {
+        return $this->belongsTo('App\SubjectTrack');
+    }
 
     /**
      * Get the strand that owns the subject.
@@ -35,5 +42,17 @@ class Subject extends Model
         $strand = Strand::find($value);
 
         return $strand;
+    }
+
+    /**
+     * Get the subject's subject track.
+     * 
+     * @param   string  $value
+     * @return  object
+     */
+    public function getSubjectTrackIdAttribute($value) {
+        $subjectTrack = SubjectTrack::find($value);
+
+        return $subjectTrack;
     }
 }

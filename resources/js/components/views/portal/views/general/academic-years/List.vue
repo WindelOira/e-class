@@ -8,7 +8,7 @@
         
         <app-table :headers="headers" source="academic_years" alias="academic-years" title="Academic Years">
             <template v-slot:year="year">
-                {{ year.td.val }} - {{ year.td.val + 1 }}
+                <span v-if="year.td.val">{{ year.td.val }} - {{ year.td.val + 1 }}</span>
             </template>
         </app-table>
     </div>
