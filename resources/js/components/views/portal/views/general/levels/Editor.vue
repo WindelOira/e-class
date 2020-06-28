@@ -76,6 +76,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'levels', id: this.models.level.id, data: this.models.level }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Level updated.', color: 'success' })
+
+                        this.$router.push({ name: 'levels' })
                     })
                 })
             }

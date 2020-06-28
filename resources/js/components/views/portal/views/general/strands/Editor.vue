@@ -89,6 +89,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'strands', id: this.models.strand.id, data: this.models.strand }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Strand updated.', color: 'success' })
+
+                        this.$router.push({ name: 'strands' })
                     }).catch(error => {
                         this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })

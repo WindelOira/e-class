@@ -3,7 +3,7 @@
         <vs-table
             :max-items="20"
             pagination
-            :data="data"
+            search :data="data"
             description
             :description-title="title" 
             :noDataText="`No ${title.toLowerCase()} found.`"
@@ -17,6 +17,7 @@
                     <vs-button @click="getDatasBySource('trashed')" color="danger" type="flat" class="py-1 px-2">Trashed</vs-button>
                 </div>
             </template>
+            
             <template slot="thead">
                 <vs-th width="50">#</vs-th>
                 <vs-th v-for="(th, th_key) in headers" :key="th_key">{{ th.text }}</vs-th>
@@ -46,8 +47,11 @@
         props       : ['title', 'source', 'alias', 'headers'],
         data() {
             return {
-                mode    : 'published',
-                data    : []
+                models      : {
+                    search      : ''
+                },
+                mode        : 'published',
+                data        : []
             }
         },
         methods     : {

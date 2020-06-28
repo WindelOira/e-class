@@ -34,6 +34,14 @@ class SubjectTrackController extends Controller
      */
     public function store(Request $request)
     {
+        $duplicates = SubjectTrack::where('name', '=', $request->input('name'))
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Subject track already exists.'
+            ], 401);
+
         $track = SubjectTrack::create($request->all());
 
         return response()->json([
@@ -81,6 +89,15 @@ class SubjectTrackController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $duplicates = SubjectTrack::where('id', '!=', $id)
+                            ->where('name', '=', $request->input('name'))
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Subject track already exists.'
+            ], 401);
+
         $track = SubjectTrack::findOrFail($id);
         $track->update($request->all());
 

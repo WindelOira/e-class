@@ -21,8 +21,7 @@ const states = {
             { text: 'Administrator', value: 'administrator' },
             { text: 'Program Head', value: 'program-head' },
             { text: 'Chief Adviser', value: 'chief-adviser' },
-            { text: 'Adviser', value: 'adviser' },
-            { text: 'Subject Teacher', value: 'subject-teacher' }
+            { text: 'Teacher', value: 'teacher' }
         ],
         academic_years  : [],
         tracks          : [],

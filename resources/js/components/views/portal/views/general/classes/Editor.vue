@@ -139,6 +139,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'classes', id: this.models.class.id, data: this.models.class }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Class updated.', color: 'success' })
+
+                        this.$router.push({ name: 'classes' })
                     })
                 })
             }

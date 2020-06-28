@@ -41,6 +41,15 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {       
+        $duplicates = Subject::where('name', '=', $request->input('name'))
+                            ->orWhere('description', '=', $request->input('description'))
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Subject already exists.'
+            ], 401);
+
         $subject = Subject::create($request->all());
 
         return response()->json([
@@ -95,6 +104,18 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $duplicates = Subject::where('id', '!=', $id)
+                            ->where(function($query) use ($request) {
+                                $query->where('name', '=', $request->input('name'))
+                                        ->orWhere('description', '=', $request->input('description'));
+                            })
+                            ->get();
+
+        if( 0 < count($duplicates) )
+            return response()->json([
+                'response'  => 'Subject already exists.'
+            ], 401);
+
         $subject = Subject::findOrFail($id);
         $subject->update($request->all());
 

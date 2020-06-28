@@ -133,6 +133,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'sections', id: this.models.section.id, data: this.models.section }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Section updated.', color: 'success' })
+
+                        this.$router.push({ name: 'sections' })
                     })
                 })
             }

@@ -76,8 +76,7 @@
                 this.$store.dispatch('updateDataBySource', { source: 'academic_years', id: this.models.academic_year.id, data: data }).then(response => {
                     this.$vs.notify({ title: 'Success', text: 'Computation variable updated.', color: 'success' })
 
-                    this.models.academic_year = response.data.response
-                    this.models.academic_year.year = new Date().setFullYear(this.models.academic_year.year)
+                    this.$router.push({ name: 'academic-years' })
                 }).catch(error => {
                     if( 401 == error.response.status ) {
                         this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })

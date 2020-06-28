@@ -82,16 +82,25 @@
         methods     : {
             create() {
                 this.$refs.observer.validate().then(success => {
+                    console.log(success)
                     if( !success )
                         return false;
 
-                    if( 'danger' == this.models.percentage.status )
+                    if( !this.models.track.written_work && !this.models.track.performance_task && !this.models.track.quarterly_assessment ) {
+                        this.$vs.notify({ title: 'Warning', text: 'Written Work, Performance Task and Quarterly Assessment are required.', color: 'warning' })
+                        return false;
+                    }
+
+                    if( 0 != this.models.percentage.remaining )
+                        this.$vs.notify({ title: 'Warning', text: 'Percentages should be a total of 100%.', color: 'warning' })
                         return false;
 
                     this.$store.dispatch('createDataBySource', { source: 'subject_tracks', data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New subject track created.', color: 'success' })
 
-                        this.$router.push({ name: 'subject_tracks' })
+                        this.$router.push({ name: 'subject-tracks' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             },
@@ -100,11 +109,20 @@
                     if( !success )
                         return false;
 
-                    if( 'danger' == this.models.percentage.status )
+                    if( !this.models.track.written_work || !this.models.track.performance_task || !this.models.track.quarterly_assessment )
+                        this.$vs.notify({ title: 'Warning', text: 'Written Work, Performance Task and Quarterly Assessment are required.', color: 'warning' })
+                        return false;
+                    
+                    if( 0 != this.models.percentage.remaining )
+                        this.$vs.notify({ title: 'Warning', text: 'Percentages should be a total of 100%.', color: 'warning' })
                         return false;
 
                     this.$store.dispatch('updateDataBySource', { source: 'subject_tracks', id: this.models.track.id, data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Subject track updated.', color: 'success' })
+
+                        this.$router.push({ name: 'subject-tracks' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             },

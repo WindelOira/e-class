@@ -27,11 +27,11 @@
                             { title: 'Grade Levels', name: 'levels', roles: ['administrator'] },
                             { title: 'Subjects', name: 'subjects', roles: ['administrator'] },
                             { title: 'Subject Tracks', name: 'subject-tracks', roles: ['administrator'] },
-                            { title: 'Sections', name: 'sections', roles: ['administrator', 'adviser', 'subject-teacher'] },
-                            { title: 'Classes', name: 'classes', roles: ['administrator', 'subject-teacher'] }
+                            { title: 'Sections', name: 'sections', roles: ['administrator', 'teacher'] },
+                            { title: 'Classes', name: 'classes', roles: ['administrator', 'teacher'] }
                         ],
                         roles   : [
-                            'administrator', 'adviser', 'subject-teacher'
+                            'administrator', 'adviser', 'teacher'
                         ]
                     },
                     {
@@ -39,21 +39,21 @@
                         list    : [
                             { title: 'Attendance', name: 'attendances', roles: ['subject-teacher'] },
                             { title: 'Consolidated Grades', name: 'consolidated-grades', roles: ['chief-adviser'] },
-                            { title: 'Grading Sheets', name: 'grading-sheets', roles: ['program-head', 'chief-adviser', 'subject-teacher'] },
+                            { title: 'Grading Sheets', name: 'grading-sheets', roles: ['program-head', 'chief-adviser', 'teacher'] },
                             { title: 'Computation Variables', name: 'computation-variables', roles: ['chief-adviser'] }
                         ],
                         roles   : [
-                            'program-head', 'chief-adviser', 'subject-teacher'
+                            'program-head', 'chief-adviser', 'teacher'
                         ]
                     },
                     {
                         title   : 'User Management',
                         list    : [
                             { title: 'Accounts', name: 'users', roles: ['administrator'] },
-                            { title: 'Students', name: 'students', roles: ['administrator', 'subject-teacher'] }
+                            { title: 'Students', name: 'students', roles: ['administrator', 'teacher'] }
                         ],
                         roles   : [
-                            'administrator', 'subject-teacher'
+                            'administrator', 'teacher'
                         ]
                     }
                 ]

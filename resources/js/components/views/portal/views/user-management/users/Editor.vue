@@ -129,7 +129,7 @@
                         this.$store.dispatch('createDataBySource', { source: 'users', data: this.models.user }).then(response => {
                             this.$vs.notify({ title: 'Success', text: 'New '+ this.models.user.role +' created.', color: 'success' })
 
-                            this.$router.push({ name: 'user_edit', params: { id: response.data.response.id }})
+                            this.$router.push({ name: 'users' })
                         })
                     })
             },
@@ -140,6 +140,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'users', id: this.models.user.id, data: this.models.user }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Account updated.', color: 'success' })
+
+                        this.$router.push({ name: 'users' })
                     })
                 })
             }

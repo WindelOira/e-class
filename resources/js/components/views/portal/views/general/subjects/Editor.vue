@@ -84,6 +84,8 @@
                         this.$vs.notify({ title: 'Success', text: 'New subject created.', color: 'success' })
 
                         this.$router.push({ name: 'subjects' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             },
@@ -94,6 +96,10 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'subjects', id: this.models.subject.id, data: this.models.subject }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Subject updated.', color: 'success' })
+
+                        this.$router.push({ name: 'subjects' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             }

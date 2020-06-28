@@ -108,7 +108,7 @@
                     this.$store.dispatch('createDataBySource', { source: 'students', data: this.models.student }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New student created.', color: 'success' })
 
-                        this.$router.push({ name: 'student_edit', params: { id: response.data.response } })
+                        this.$router.push({ name: 'students' })
                     })
                 })
             },
@@ -119,6 +119,8 @@
 
                     this.$store.dispatch('updateDataBySource', { source: 'students', id: this.models.student.id, data: this.models.student }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Student updated.', color: 'success' })
+
+                        this.$router.push({ name: 'students' })
                     })
                 })
             }
