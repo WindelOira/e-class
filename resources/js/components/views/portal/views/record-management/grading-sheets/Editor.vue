@@ -42,7 +42,7 @@
                
             </vs-col>
             <vs-col vs-xs="12" vs-sm="6" vs-lg="3">
-                <div v-if="'subject-teacher' == user.role">
+                <div v-if="'teacher' == user.role">
                     <vs-select v-model="models.grading_sheet.level_id" label="Grade Level" placeholder="Select Grade Level" class="mb-2">
                         <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text"></vs-select-item>
                     </vs-select>
@@ -67,7 +67,7 @@
                 </div>
             </vs-col>
             <vs-col vs-xs="12" vs-sm="6" vs-lg="3">
-                <div v-if="'subject-teacher' == user.role">
+                <div v-if="'teacher' == user.role">
                     <vs-select v-model="models.grading_sheet.user_id" label="Adviser" placeholder="Select Adviser" class="mb-2">
                         <vs-select-item v-for="(adviser, index) in $store.state.options.advisers" :key="index" :value="adviser.value" :text="adviser.text"></vs-select-item>
                     </vs-select>
@@ -86,7 +86,7 @@
                 </div>
             </vs-col>
             <vs-col vs-xs="12" vs-sm="6" vs-lg="3">
-                <div v-if="'subject-teacher' == user.role">
+                <div v-if="'teacher' == user.role">
                     <vs-select v-model="models.grading_sheet.subject_id" @change="getSubjectTracks" label="Subject" placeholder="Select Subject" class="mb-2">
                         <vs-select-item v-for="(subject, index) in $store.state.options.subjects" :key="index" :value="subject.value" :text="subject.text"></vs-select-item>
                     </vs-select>
@@ -138,7 +138,7 @@
                                         <strong>{{ tr.student_id.student_id }}</strong>
                                         <br>
                                         {{ tr.student_id.name }}
-                                        <a @click="editStudentRatings(tr, indexq, indextr)" href="javascript:;" class="float-right">{{ 'subject-teacher' == user.role ? 'Edit' : 'View' }} Grades</a>
+                                        <a @click="editStudentRatings(tr, indexq, indextr)" href="javascript:;" class="float-right">{{ 'teacher' == user.role ? 'Edit' : 'View' }} Grades</a>
                                     </vs-td>
                                     <vs-td v-for="(vh, indexvh) in vars.headers" :key="indexvh">
                                         <vs-row>
@@ -193,7 +193,7 @@
                     <div>
                         <vs-list>
                             <vs-list-item v-for="(quarter, indexq) in models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter]" :key="indexq" :subtitle="`Q${(indexq + 1)}`">
-                                <vs-input-number v-if="'subject-teacher' == user.role" v-model="models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter][indexq]" :step="0.1" :min="0" :max="100"/>
+                                <vs-input-number v-if="'teacher' == user.role" v-model="models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter][indexq]" :step="0.1" :min="0" :max="100"/>
                                 <span v-else>{{ models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter][indexq] }}%</span>
                             </vs-list-item>
                         </vs-list>
