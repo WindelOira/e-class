@@ -36,10 +36,12 @@
                         <slot :name="th.key" v-bind:td="{ id: data[td_key].id, key: td_key, val: data[td_key][th.key] }">{{ data[td_key][th.key] }}</slot>
                     </vs-td>
                     <vs-td>
-                        <vs-button v-if="data[td_key].deleted_at" @click="restoreDatasBySource(data[td_key].id)" type="flat">Restore</vs-button>
-                        <vs-button v-else @click="getDataBySource(data[td_key].id)" type="flat">Edit</vs-button>
+                        <slot name="actions" v-bind:id="data[td_key].id">
+                            <vs-button v-if="data[td_key].deleted_at" @click="restoreDatasBySource(data[td_key].id)" type="flat">Restore</vs-button>
+                            <vs-button v-else @click="getDataBySource(data[td_key].id)" type="flat">Edit</vs-button>
 
-                        <vs-button @click="deleteDataBySource(data[td_key].id)" color="danger" type="flat">Delete</vs-button>
+                            <vs-button @click="deleteDataBySource(data[td_key].id)" color="danger" type="flat">Delete</vs-button>
+                        </slot>
                     </vs-td>
                 </vs-tr>
             </template>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <vs-row class="mb-3">
+        <vs-row v-if="'teacher' == user.role" class="mb-3">
             <vs-col>
                 <vs-button @click="$router.push({ name: 'grading-sheet_new' })">Add New</vs-button>
             </vs-col>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import Table from 'Views/portal/partials/Table.vue'
 
     export default {
@@ -45,6 +46,11 @@
                 ],
                 attendance      : false
             }
+        },
+        computed    : {
+            ...mapGetters([
+                'user'
+            ])
         }
     }
 </script>

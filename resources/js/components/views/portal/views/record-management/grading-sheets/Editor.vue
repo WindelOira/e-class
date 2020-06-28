@@ -11,7 +11,7 @@
                 <vs-button v-if="$route.params.id" @click="exportSheet" color="dark" class="mr-2">
                     <vs-icon icon="import_export" size="16px"></vs-icon> Export
                 </vs-button>
-                <vs-button v-if="'subject-teacher' == user.role" @click="$route.params.id ? update() : create()" :disabled="!valid">Save</vs-button>
+                <vs-button v-if="'teacher' == user.role" @click="$route.params.id ? update() : create()" :disabled="!valid">Save</vs-button>
             </vs-col>
         </vs-row>
 
@@ -59,10 +59,10 @@
                 </div>
                 <div v-else>
                     <p class="mb-2">
-                        <strong>Grade Level :</strong> {{ models.grading_sheet ? models.grading_sheet.sheet.level_id.name : '' }}
+                        <strong>Grade Level :</strong> {{ models.grading_sheet.sheet ? models.grading_sheet.sheet.level_id.name : '' }}
                     </p>
                     <p>
-                        <strong>Section :</strong> {{ models.grading_sheet ? models.grading_sheet.sheet.section_id.name : '' }}
+                        <strong>Section :</strong> {{ models.grading_sheet.sheet ? models.grading_sheet.sheet.section_id.name : '' }}
                     </p>
                 </div>
             </vs-col>
@@ -78,10 +78,10 @@
                 </div>
                 <div v-else>
                     <p class="mb-2">
-                        <strong>Adviser :</strong> {{ models.grading_sheet ? models.grading_sheet.sheet.user_id.name : '' }}
+                        <strong>Adviser :</strong> {{ models.grading_sheet.sheet ? models.grading_sheet.sheet.user_id.name : '' }}
                     </p>
                     <p>
-                        <strong>Semester :</strong> {{ models.grading_sheet ? models.grading_sheet.sheet.semester : '' }}
+                        <strong>Semester :</strong> {{ models.grading_sheet.sheet ? models.grading_sheet.sheet.semester : '' }}
                     </p>
                 </div>
             </vs-col>
@@ -103,10 +103,10 @@
                 </div>
                 <div v-else>
                     <p class="mb-2">
-                        <strong>Subject :</strong> {{ models.grading_sheet.sheet.subject_id.name }}
+                        <strong>Subject :</strong> {{ models.grading_sheet.sheet ? models.grading_sheet.sheet.subject_id.name : '' }}
                     </p>
                     <p>
-                        <strong>Subject Track :</strong> {{ models.grading_sheet.sheet.subject_track_id.name }}
+                        <strong>Subject Track :</strong> {{ models.grading_sheet.sheet ? models.grading_sheet.sheet.subject_track_id.name : '' }}
                     </p>
                 </div>
             </vs-col>
