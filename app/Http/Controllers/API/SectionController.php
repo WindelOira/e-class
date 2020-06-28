@@ -9,6 +9,7 @@ use App\User;
 use App\Student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class SectionController extends Controller
 {
@@ -38,7 +39,14 @@ class SectionController extends Controller
      */
     public function store(Request $request)
     {
-        $section = Section::create($request->all());
+        $section = Section::create($request->except('students'));
+        
+        if( 0 < count($request->input('students')) ) :
+            foreach( $request->input('students') as $student ) :
+                $student = Student::find($student);
+                $student->update([ 'section_id' => $section->id ]);
+            endforeach;
+        endif;
 
         return response()->json([
             'response'      => $section
@@ -79,7 +87,7 @@ class SectionController extends Controller
                 'level_id'          => $section->level_id->id,
                 'user_id'           => $section->user_id->id,
                 'name'              => $section->name,
-                'students'          => $section->students,
+                'students'          => Arr::pluck($section->students, 'id'),
                 'grading_sheets'    => $section->grading_sheets
             ]
         ], 200);
