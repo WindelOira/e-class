@@ -4,6 +4,9 @@ const getters = {
     },
     template    : state => {
         return state.template
+    },
+    apiData     : state => {
+        return state.apiData
     }
 }
 

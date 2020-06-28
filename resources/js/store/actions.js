@@ -60,7 +60,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             axios({
                 method      : 'GET',
-                url         : `api/${payload.source}/${payload.status}`
+                url         : payload.filters ? `api/${payload.source}/${payload.status}/${payload.filters}` : `api/${payload.source}/${payload.status}`
             }).then(response => {
                 if( !payload.no_commit ) {
                     commit('UNSET_ACTIVE_DATA')

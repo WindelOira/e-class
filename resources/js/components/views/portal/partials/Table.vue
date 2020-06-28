@@ -2,22 +2,26 @@
     <div>
         <vs-table
             :max-items="20"
-            pagination
-            search :data="data"
-            description
+            :data="apiData.datas"
             :description-title="title" 
-            :noDataText="`No ${title.toLowerCase()} found.`"
+            :noDataText="`No ${title.toLowerCase()} found.`" 
+            search 
+            pagination 
+            description 
             description-connector="of"
             description-body="Pages">
             <template slot="header">
                 <div class="pt-2 pb-3">
                     <h3 class="mb-1">{{ title }}</h3>
+                    <div v-if="filters" class="my-3">
+                        <slot name="filters"></slot>
+                    </div>
                     <vs-button @click="getDatasBySource('published')" type="flat" class="py-1 px-2">Published</vs-button>
                     <span class="mx-1">|</span>
                     <vs-button @click="getDatasBySource('trashed')" color="danger" type="flat" class="py-1 px-2">Trashed</vs-button>
                 </div>
             </template>
-            
+
             <template slot="thead">
                 <vs-th width="50">#</vs-th>
                 <vs-th v-for="(th, th_key) in headers" :key="th_key">{{ th.text }}</vs-th>
@@ -43,23 +47,22 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
+
     export default {
-        props       : ['title', 'source', 'alias', 'headers'],
+        props       : ['title', 'source', 'alias', 'headers', 'filters'],
         data() {
             return {
                 models      : {
                     search      : ''
                 },
-                mode        : 'published',
-                data        : []
+                mode        : 'published'
             }
         },
         methods     : {
-            getDatasBySource(status = 'published') {
+            getDatasBySource(status = 'published', filters = null) {
                 this.mode = status
-                this.$store.dispatch('getDatasBySource', { source: this.source, status: status }).then(response => {
-                    this.data = response.data.response
-                })
+                this.$store.dispatch('getDatasBySource', { source: this.source, status: status, filters: filters })
             },
             getDataBySource(id) {
                 this.$store.dispatch('getDataBySource', { source: this.source, id: id }).then(response => {
@@ -80,6 +83,11 @@
                     this.getDatasBySource(this.mode)
                 })
             }
+        },
+        computed    : {
+            ...mapGetters([
+                'apiData'
+            ])
         },
         mounted() {
             this.getDatasBySource()

@@ -6,7 +6,12 @@
             </vs-col>
         </vs-row>
 
-        <app-table :headers="headers" source="users" title="Accounts">
+        <app-table :headers="headers" source="users" title="Accounts" :filters="true">
+            <template v-slot:filters>
+                <vs-select v-model="models.filters.role" @change="filter('role')" label="Filter by role:" placeholder="Select role">
+                    <vs-select-item v-for="(role, indexr) in $store.state.options.roles" :key="indexr" :value="role.value" :text="role.text"></vs-select-item>
+                </vs-select>
+            </template>
             <template v-slot:role="role">{{ roles[role.td.val] }}</template>
         </app-table>
     </div>
@@ -26,7 +31,17 @@
                     { key: 'role', text: 'Role' },
                     { key: 'name', text: 'Name' },
                     { key: 'email', text: 'Email Address' }
-                ]
+                ],
+                models      : {
+                    filters     : {
+                        role        : ''
+                    }
+                }
+            }
+        },
+        methods     : {
+            filter(type) {
+                this.$store.dispatch('getDatasBySource', { source: 'users', status: 'published', filters: `${type}_${this.models.filters[type]}` })
             }
         },
         computed    : {

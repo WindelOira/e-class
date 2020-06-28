@@ -117,19 +117,31 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($status)
+    public function index($status, $filters = null)
     {
-        $user = Auth::user();
+        $filters = $filters ? explode(',', $filters) : false;
+        $where = [];
+
+        if( $user = Auth::user() ) :
+            $where[] = [ 'id', '!=', $user->id ];
+        endif;
+        
+        if( $filters ) :
+            foreach( $filters as $filter ) :
+                $filter = explode('_', $filter);
+
+                $where[] = [ $filter[0], '=', $filter[1] ];
+            endforeach;
+        endif;
+
         if( 'published' == $status ) :
-            $users = User::whereNull('deleted_at')->where([
-                ['role', '!=', 'administrator'],
-                ['id', '!=', $user ? $user->id : null]
-            ])->get();
+            $users = User::whereNull('deleted_at')
+                        ->where($where)
+                        ->get();
         else :
-            $users = User::onlyTrashed()->where([
-                ['role', '!=', 'administrator'],
-                ['id', '!=', $user ? $user->id : null]
-            ])->get();
+            $users = User::onlyTrashed()
+                        ->where($where)
+                        ->get();
         endif;
 
         return response()->json([
