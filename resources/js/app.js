@@ -9,11 +9,15 @@ import Vue from 'vue'
 import Vuesax from 'vuesax'
 import VueMoment from 'vue-moment'
 import { extend } from 'vee-validate'
-import { required, confirmed } from 'vee-validate/dist/rules'
+import { required, numeric, confirmed } from 'vee-validate/dist/rules'
 
 extend('required', {
     ...required,
     message     : 'This field is required'
+})
+extend('numeric', {
+    ...numeric,
+    message     : 'This field should contain numbers only.'
 })
 extend('confirmed', {
     ...confirmed,

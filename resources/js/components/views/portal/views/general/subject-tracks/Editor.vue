@@ -24,20 +24,23 @@
                                         <vs-input v-model="models.track.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" class="mb-4"></vs-input>
                                     </validation-provider>
 
-                                    <div class="vs-component vs-con-input-label mb-3">
-                                        <label class="vs-input--label">Written Work ({{ models.track.written_work }}%)</label>
-                                        <vs-slider v-model="models.track.written_work" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
-                                    </div>
-
-                                    <div class="vs-component vs-con-input-label mb-3">
-                                        <label class="vs-input--label">Performance Task ({{ models.track.performance_task }}%)</label>
-                                        <vs-slider v-model="models.track.performance_task" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
-                                    </div>
-
-                                    <div class="vs-component vs-con-input-label mb-3">
-                                        <label class="vs-input--label">Quarterly Assessment ({{ models.track.quarterly_assessment }}%)</label>
-                                        <vs-slider v-model="models.track.quarterly_assessment" @change="calcRemaining" :color="models.percentage.status" text-fixed="%" step-decimals/>
-                                    </div>
+                                    <vs-row>
+                                        <vs-col vs-xs="4" vs-sm="4" vs-lg="4">
+                                            <validation-provider rules="required|numeric" v-slot="{errors}">
+                                                <vs-input v-model="models.track.written_work" @change="calcRemaining" :danger="0 < errors.length" :danger-text="errors[0]" :label="`Written Work (${models.track.written_work}%)`"></vs-input>
+                                            </validation-provider>
+                                        </vs-col>
+                                        <vs-col vs-xs="4" vs-sm="4" vs-lg="4">
+                                            <validation-provider rules="required|numeric" v-slot="{errors}">
+                                                <vs-input v-model="models.track.performance_task" @change="calcRemaining" :danger="0 < errors.length" :danger-text="errors[0]" :label="`Performance Task (${models.track.performance_task}%)`"></vs-input>
+                                            </validation-provider>
+                                        </vs-col>
+                                        <vs-col vs-xs="4" vs-sm="4" vs-lg="4">
+                                            <validation-provider rules="required|numeric" v-slot="{errors}">
+                                                <vs-input v-model="models.track.quarterly_assessment" @change="calcRemaining" :danger="0 < errors.length" :danger-text="errors[0]" :label="`Quarterly Assessment (${models.track.quarterly_assessment}%)`"></vs-input>
+                                            </validation-provider>
+                                        </vs-col>
+                                    </vs-row>
                                 </vs-col>
                             </vs-row>
                         </vs-card>
@@ -68,9 +71,9 @@
             return {
                 models  : {
                     track       : {
-                        written_work            : 0,
-                        performance_task        : 0,
-                        quarterly_assessment    : 0
+                        written_work            : '',
+                        performance_task        : '',
+                        quarterly_assessment    : ''
                     },
                     percentage  : {
                         status      : 'success',
@@ -82,18 +85,13 @@
         methods     : {
             create() {
                 this.$refs.observer.validate().then(success => {
-                    console.log(success)
                     if( !success )
                         return false;
 
-                    if( !this.models.track.written_work && !this.models.track.performance_task && !this.models.track.quarterly_assessment ) {
-                        this.$vs.notify({ title: 'Warning', text: 'Written Work, Performance Task and Quarterly Assessment are required.', color: 'warning' })
-                        return false;
-                    }
-
-                    if( 0 != this.models.percentage.remaining )
+                    if( 0 < this.models.percentage.remaining ) {
                         this.$vs.notify({ title: 'Warning', text: 'Percentages should be a total of 100%.', color: 'warning' })
                         return false;
+                    }
 
                     this.$store.dispatch('createDataBySource', { source: 'subject_tracks', data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New subject track created.', color: 'success' })
@@ -104,18 +102,15 @@
                     })
                 })
             },
-            update() {
+            update() {                
                 this.$refs.observer.validate().then(success => {
                     if( !success )
                         return false;
 
-                    if( !this.models.track.written_work || !this.models.track.performance_task || !this.models.track.quarterly_assessment )
-                        this.$vs.notify({ title: 'Warning', text: 'Written Work, Performance Task and Quarterly Assessment are required.', color: 'warning' })
-                        return false;
-                    
-                    if( 0 != this.models.percentage.remaining )
+                    if( 0 < this.models.percentage.remaining ) {
                         this.$vs.notify({ title: 'Warning', text: 'Percentages should be a total of 100%.', color: 'warning' })
                         return false;
+                    }
 
                     this.$store.dispatch('updateDataBySource', { source: 'subject_tracks', id: this.models.track.id, data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'Subject track updated.', color: 'success' })
@@ -127,7 +122,7 @@
                 })
             },
             calcRemaining(value) {
-                this.models.percentage.remaining = 100 - (this.models.track.written_work + this.models.track.performance_task + this.models.track.quarterly_assessment)
+                this.models.percentage.remaining = 100 - (parseInt(this.models.track.written_work) + parseInt(this.models.track.performance_task) + parseInt(this.models.track.quarterly_assessment))
                 this.models.percentage.status = this.models.percentage.remaining < 0 ? 'danger' : 'success'
             }
         },
@@ -142,6 +137,8 @@
                 } else {
                     this.models.track = this.$store.state.apiData.active
                 }
+
+                this.models.percentage.remaining = 0
             }
         }
     }
