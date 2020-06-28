@@ -10,7 +10,7 @@
             <template v-slot:user_id="adviser">{{ adviser.td.val.name }}</template>
             <template v-slot:strand_id="strand">{{ strand.td.val.code }}</template>
             <template v-slot:level_id="level">{{ level.td.val.name }}</template>
-            <template v-slot:academic_year_id="academic_year">{{ academic_year.td.val.year - 1 }} - {{ academic_year.td.val.year }}</template>
+            <template v-slot:academic_year_id="academic_year">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</template>
             <template v-slot:students>
                 <!-- <router-link></router-link> -->
             </template>

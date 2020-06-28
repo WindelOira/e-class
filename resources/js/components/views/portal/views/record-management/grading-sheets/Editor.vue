@@ -44,16 +44,16 @@
             <vs-col vs-xs="12" vs-sm="6" vs-lg="3">
                 <div v-if="'teacher' == user.role">
                     <vs-select v-model="models.grading_sheet.level_id" label="Grade Level" placeholder="Select Grade Level" class="mb-2">
-                        <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text"></vs-select-item>
+                        <vs-select-item v-for="(level, index) in options.levels" :key="index" :value="level.value" :text="level.text"></vs-select-item>
                     </vs-select>
-                    <p v-if="0 == $store.state.options.levels.length" class="mb-3">
+                    <p v-if="0 == options.levels.length" class="mb-3">
                         No grade levels found. Please create <router-link :to="{ name: 'level_new' }">here.</router-link>
                     </p>
                 
                     <vs-select v-model="models.grading_sheet.section_id" @change="getSectionStudents" label="Section" placeholder="Select Section" class="mb-2">
-                        <vs-select-item v-for="(section, index) in $store.state.options.sections" :key="index" :value="section.value" :text="section.text"></vs-select-item>
+                        <vs-select-item v-for="(section, index) in options.sections" :key="index" :value="section.value" :text="section.text"></vs-select-item>
                     </vs-select>
-                    <p v-if="0 == $store.state.options.sections.length" class="mb-3">
+                    <p v-if="0 == options.sections.length" class="mb-3">
                         No sections found. Please create <router-link :to="{ name: 'section_new' }">here.</router-link>
                     </p>
                 </div>
@@ -69,7 +69,7 @@
             <vs-col vs-xs="12" vs-sm="6" vs-lg="3">
                 <div v-if="'teacher' == user.role">
                     <vs-select v-model="models.grading_sheet.user_id" label="Adviser" placeholder="Select Adviser" class="mb-2">
-                        <vs-select-item v-for="(adviser, index) in $store.state.options.advisers" :key="index" :value="adviser.value" :text="adviser.text"></vs-select-item>
+                        <vs-select-item v-for="(adviser, index) in options.advisers" :key="index" :value="adviser.value" :text="adviser.text"></vs-select-item>
                     </vs-select>
                     <vs-select v-model="models.grading_sheet.semester" label="Semester" placeholder="Select Semester" class="mb-2">
                         <vs-select-item value="first" text="First Semester"></vs-select-item>
@@ -88,16 +88,16 @@
             <vs-col vs-xs="12" vs-sm="6" vs-lg="3">
                 <div v-if="'teacher' == user.role">
                     <vs-select v-model="models.grading_sheet.subject_id" @change="getSubjectTracks" label="Subject" placeholder="Select Subject" class="mb-2">
-                        <vs-select-item v-for="(subject, index) in $store.state.options.subjects" :key="index" :value="subject.value" :text="subject.text"></vs-select-item>
+                        <vs-select-item v-for="(subject, index) in options.subjects" :key="index" :value="subject.value" :text="subject.text"></vs-select-item>
                     </vs-select>
-                    <p v-if="0 == $store.state.options.subjects.length" class="mb-3">
+                    <p v-if="0 == options.subjects.length" class="mb-3">
                         No subjects found. Please create <router-link :to="{ name: 'subject_new' }">here.</router-link>
                     </p>
 
                     <vs-select v-model="models.grading_sheet.subject_track_id" @change="getSubjectTrackCols" label="Subject Track" placeholder="Select Track" class="mb-2">
-                        <vs-select-item v-for="(subject_track, index) in $store.state.options.subject_tracks" :key="index" :value="subject_track.value" :text="subject_track.text"></vs-select-item>
+                        <vs-select-item v-for="(subject_track, index) in options.subject_tracks" :key="index" :value="subject_track.value" :text="subject_track.text"></vs-select-item>
                     </vs-select>
-                    <p v-if="0 == $store.state.options.subject_tracks.length" class="mb-3">
+                    <p v-if="0 == options.subject_tracks.length" class="mb-3">
                         No subject tracks found. Please create <router-link :to="{ name: 'subject-track_new' }">here.</router-link>
                     </p>
                 </div>
@@ -554,7 +554,7 @@
         },
         computed    : {
             ...mapGetters([
-                'user'
+                'user', 'options'
             ]),
             valid() {
                 // if( !this.models.grading_sheet.level_id ) 
@@ -583,12 +583,11 @@
                 this.models.approval.user_id = this.user.id
             }
 
-            this.$store.dispatch('getSelectOptions', { source: 'levels' })
-            this.$store.dispatch('getSelectOptions', { source: 'users', alias: 'advisers', filters: [{ key: 'role', value: 'adviser' }] })
-            this.$store.dispatch('getSelectOptions', { source: 'sections' })
-            this.$store.dispatch('getSelectOptions', { source: 'subjects' })
-            this.$store.dispatch('getSelectOptions', { source: 'subject_tracks' })
-            this.$store.dispatch('getSelectOptions', { source: 'users', alias: 'advisers', filters: [{ key: 'role', value: 'adviser' }] })
+            this.$store.dispatch('getSelectOptions', { source: 'levels', status: 'published' })
+            this.$store.dispatch('getSelectOptions', { source: 'sections', status: 'published' })
+            this.$store.dispatch('getSelectOptions', { source: 'subjects', status: 'published' })
+            this.$store.dispatch('getSelectOptions', { source: 'subject_tracks', status: 'published' })
+            this.$store.dispatch('getSelectOptions', { source: 'users', alias: 'advisers', filters: [{ key: 'role', value: 'teacher' }] })
             this.$store.dispatch('getUsers', { no_commit: true }).then(response => {
                 if( 0 < response.data.response.length ) {
                     response.data.response.forEach(user => {

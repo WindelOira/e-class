@@ -7,7 +7,7 @@
         </vs-row>
         
         <app-table :headers="headers" source="classes" title="Classes">
-            <template v-slot:academic_year_id="academic_year">{{ academic_year.td.val.year - 1 }} - {{ academic_year.td.val.year }}</template>
+            <template v-slot:academic_year_id="academic_year">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</template>
             <template v-slot:subject_id="subject">{{ subject.td.val.name }}</template>
             <template v-slot:track_id="track">{{ track.td.val.name }}</template>
             <template v-slot:section_id="section">{{ section.td.val.name }}</template>
