@@ -77,7 +77,12 @@ class StrandController extends Controller
         $strand = Strand::findOrFail($id);
 
         return response()->json([
-            'response'      => $strand
+            'response'      => [
+                'id'            => $strand->id,
+                'code'          => $strand->code,
+                'description'   => $strand->description,
+                'track_id'      => $strand->track_id->id
+            ] 
         ], 200);
     }
 

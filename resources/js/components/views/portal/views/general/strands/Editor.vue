@@ -7,7 +7,7 @@
             </vs-col>
         </vs-row>
 
-        <validation-provider ref="observer">
+        <validation-observer ref="observer">
             <form @submit.prevent="$route.params.id ? update() : create()">
                 <vs-row>
                     <vs-col vs-xs="12" vs-sm="7" vs-lg="9">
@@ -48,7 +48,7 @@
                     </vs-col>
                 </vs-row>
             </form>
-        </validation-provider>
+        </validation-observer>
     </div>
 </template>
 

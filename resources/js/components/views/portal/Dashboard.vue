@@ -5,7 +5,6 @@
             <portal-navbar v-if="user"></portal-navbar>
 
             <div id="app-content" class="py-4 mt-4">
-                <!-- <vs-progress v-if="template.isLoading" indeterminate color="primary">primary</vs-progress> -->
                 <router-view></router-view>
             </div>
         </div>
