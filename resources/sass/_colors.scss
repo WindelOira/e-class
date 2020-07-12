@@ -20,12 +20,18 @@ $light: #ffffff;
 .success-text {
     color: $success !important;
 }
+.success-border {
+    border: 1px solid $success !important;
+}
 
 .danger {
     background-color: $danger !important;
 }
 .danger-text {
     color: $danger !important;
+}
+.danger-border {
+    border: 1px solid $danger !important;
 }
 
 .warning {
@@ -34,6 +40,9 @@ $light: #ffffff;
 .warning-text {
     color: $warning !important;
 }
+.warning-border {
+    border: 1px solid $warning !important;
+}
 
 .dark {
     background-color: $dark !important;
@@ -41,10 +50,16 @@ $light: #ffffff;
 .dark-text {
     color: $dark !important;
 }
+.dark-border {
+    border: 1px solid $dark !important;
+}
 
 .light {
     background-color: $light !important;
 }
 .light-text {
     color: $light !important;
+}
+.light-border {
+    border: 1px solid $light !important;
 }

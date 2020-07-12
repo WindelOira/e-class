@@ -17,11 +17,11 @@
                             <vs-row>
                                 <vs-col vs-xs="12" vs-md="8" vs-lg="9">
                                     <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.subject.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Subject" class="mb-3"></vs-input>
+                                        <vs-input v-model="models.subject.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Subject Code" class="mb-3"></vs-input>
                                     </validation-provider>
                                 </vs-col>
                                 <vs-col vs-xs="12" vs-md="4" vs-lg="3">
-                                    <validation-provider rules="required" v-slot="{errors}">
+                                    <validation-provider rules="required|numeric" v-slot="{errors}">
                                         <vs-input v-model="models.subject.hours" :danger="0 < errors.length" :danger-text="errors[0]" label="Hours" class="mb-3"></vs-input>
                                     </validation-provider>
                                 </vs-col>
@@ -29,7 +29,12 @@
 
                             <vs-row>
                                 <vs-col>
-                                    <vs-textarea v-model="models.subject.description" label="Description"></vs-textarea>
+                                    <validation-provider rules="required" v-slot="{errors}">
+                                        <vs-textarea v-model="models.subject.description" :class="{'danger-border': 0 < errors.length}" label="Subject Description"></vs-textarea>
+                                        <div class="con-text-validation span-text-validation-danger">
+                                            <span class="span-text-validation">{{ errors[0] }}</span>
+                                        </div>
+                                    </validation-provider>
                                 </vs-col>
                             </vs-row>
                         </vs-card>
@@ -47,15 +52,6 @@
                                 <validation-provider rules="required" v-slot="{errors}">
                                     <vs-select v-model="models.subject.subject_track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Subject Track" placeholder="Select Subject Track" class="mb-2">
                                         <vs-select-item v-for="(subject_track, index) in $store.state.options.subject_tracks" :key="index" :value="subject_track.value" :text="subject_track.text"/>
-                                    </vs-select>
-                                </validation-provider>
-                                <p v-if="0 == $store.state.options.strands.length">
-                                    No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
-                                </p>
-
-                                <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.subject.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
-                                        <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"/>
                                     </vs-select>
                                 </validation-provider>
                                 <p v-if="0 == $store.state.options.strands.length">

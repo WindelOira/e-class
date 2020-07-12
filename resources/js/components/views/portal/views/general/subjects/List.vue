@@ -10,8 +10,8 @@
             <template v-slot:filters>
                 <vs-row>
                     <vs-col vs-xs="6" vs-sm="6" vs-lg="6">
-                        <vs-select v-model="models.filters.strand_id" @change="filter('strand_id')" label="Filter by strand:" placeholder="Select strand">
-                            <vs-select-item v-for="(strand, indexs) in options.strands" :key="indexs" :value="strand.value" :text="strand.text"></vs-select-item>
+                        <vs-select v-model="models.filters.subject_track_id" @change="filter('subject_track_id')" label="Filter by subject track:" placeholder="Select strand">
+                            <vs-select-item v-for="(subject_track, indexst) in options.subject_tracks" :key="indexst" :value="subject_track.value" :text="subject_track.text"></vs-select-item>
                         </vs-select>
                     </vs-col>
 
@@ -24,7 +24,6 @@
                 </vs-row>
             </template>
             <template v-slot:subject_track_id="subject_track">{{ subject_track.td.val ? subject_track.td.val.name : '' }}</template>
-            <template v-slot:strand_id="strand">{{ strand.td.val ? strand.td.val.code : '' }}</template>
             <template v-slot:semester="semester">
                 <span v-if="semester.td.val">{{ semester.td.val[0].toUpperCase() }}{{ semester.td.val.substr(1) }}</span>
             </template>
@@ -45,14 +44,13 @@
                 headers     : [
                     { key: 'name', text: 'Subject' },
                     { key: 'subject_track_id', text: 'Subject Track' },
-                    { key: 'strand_id', text: 'Strand' },
                     { key: 'hours', text: 'Hours per Semester' },
                     { key: 'semester', text: 'Semester' }
                 ],
                 models      : {
                     filters     : {
-                        semester    : '',
-                        strand_id   : ''
+                        semester            : '',
+                        subject_track_id    : ''
                     }
                 }
             }
@@ -68,7 +66,7 @@
             ])
         },
         created() {
-            this.$store.dispatch('getSelectOptions', { source: 'strands' })
+            this.$store.dispatch('getSelectOptions', { source: 'subject_tracks' })
         }
     }
 </script>

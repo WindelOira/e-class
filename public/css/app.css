@@ -14,12 +14,20 @@
   color: #43A047 !important;
 }
 
+.success-border {
+  border: 1px solid #43A047 !important;
+}
+
 .danger {
   background-color: #e53935 !important;
 }
 
 .danger-text {
   color: #e53935 !important;
+}
+
+.danger-border {
+  border: 1px solid #e53935 !important;
 }
 
 .warning {
@@ -30,6 +38,10 @@
   color: #FB8C00 !important;
 }
 
+.warning-border {
+  border: 1px solid #FB8C00 !important;
+}
+
 .dark {
   background-color: #212121 !important;
 }
@@ -38,12 +50,20 @@
   color: #212121 !important;
 }
 
+.dark-border {
+  border: 1px solid #212121 !important;
+}
+
 .light {
   background-color: #ffffff !important;
 }
 
 .light-text {
   color: #ffffff !important;
+}
+
+.light-border {
+  border: 1px solid #ffffff !important;
 }
 
 body {
@@ -141,6 +161,10 @@ b {
 
 .con-select {
   width: 100% !important;
+}
+
+.vs-component.vs-con-textarea {
+  margin-bottom: 0;
 }
 
 .vs-component.con-vs-checkbox {
