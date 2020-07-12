@@ -20,7 +20,7 @@
 
                             <vs-row>
                                 <vs-col>
-                                    <validation-provider rules="required" v-slot="{errors}">
+                                    <validation-provider rules="required|numeric" v-slot="{errors}">
                                         <vs-input v-model="models.level.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Grade Level"></vs-input>
                                     </validation-provider>
                                 </vs-col>
