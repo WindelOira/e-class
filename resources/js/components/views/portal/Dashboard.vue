@@ -1,12 +1,12 @@
 <template>
-    <div id="app-dashboard" :class="{'no-sidebar': template.noSidebar}">
+    <div id="app-dashboard" :class="{'no-sidebar': template.noSidebar, 'loading': template.isLoading}">
         <portal-sidebar v-if="user && !template.noSidebar"></portal-sidebar>
         <div id="app-main" class="px-3 py-4">
             <portal-navbar v-if="user"></portal-navbar>
 
             <div id="app-content" class="py-4 mt-4">
-                <vs-progress v-if="template.isLoading" indeterminate color="primary">primary</vs-progress>
-                <router-view v-else></router-view>
+                <!-- <vs-progress v-if="template.isLoading" indeterminate color="primary">primary</vs-progress> -->
+                <router-view></router-view>
             </div>
         </div>
     </div>

@@ -71,7 +71,7 @@ class AcademicYearController extends Controller
     public function show($id)
     {
         $year = AcademicYear::findOrFail($id);
-        $year->year = 2019;
+        // $year->year = 2019;
 
         return response()->json([
             'response'      => $year

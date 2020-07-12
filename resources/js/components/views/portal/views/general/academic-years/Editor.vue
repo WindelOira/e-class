@@ -74,7 +74,7 @@
                 data.year = new Date(this.models.academic_year.year).getFullYear()
 
                 this.$store.dispatch('updateDataBySource', { source: 'academic_years', id: this.models.academic_year.id, data: data }).then(response => {
-                    this.$vs.notify({ title: 'Success', text: 'Computation variable updated.', color: 'success' })
+                    this.$vs.notify({ title: 'Success', text: 'Academic year updated.', color: 'success' })
 
                     this.$router.push({ name: 'academic-years' })
                 }).catch(error => {
@@ -97,7 +97,7 @@
                 if( !this.$store.state.apiData.active ) {
                     this.$store.dispatch('getDataBySource', { source: 'academic_years', id: this.$route.params.id }).then(response => {
                         this.models.academic_year = response.data.response
-                        this.models.academic_year.year = new Date().setFullYear(this.models.academic_year.year) 
+                        this.models.academic_year.year = new Date().setFullYear(this.models.academic_year.year)
                     }).catch(_ => {
                         this.$router.push({ name: 'academic-years' })
                     })
