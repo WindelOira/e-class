@@ -10,7 +10,7 @@
             <template v-slot:filters>
                 <vs-row>
                     <vs-col vs-xs="6" vs-sm="6" vs-lg="6">
-                        <vs-select v-model="models.filters.subject_track_id" @change="filter('subject_track_id')" label="Filter by subject track:" placeholder="Select strand">
+                        <vs-select v-model="models.filters.subject_track_id" @change="filter('subject_track_id')" label="Filter by subject track:" placeholder="Select track">
                             <vs-select-item v-for="(subject_track, indexst) in options.subject_tracks" :key="indexst" :value="subject_track.value" :text="subject_track.text"></vs-select-item>
                         </vs-select>
                     </vs-col>
