@@ -16,11 +16,6 @@
             <template v-slot:students>
                 <!-- <router-link></router-link> -->
             </template>
-            <template v-slot:consolidated_grades="section">
-                <router-link :to="{ name: 'section_consolidated-grades', params: { id: section.td.id, semester: 'first' } }">First Semester</router-link>
-                |
-                <router-link :to="{ name: 'section_consolidated-grades', params: { id: section.td.id, semester: 'second' } }">Second Semester</router-link>
-            </template>
             <template v-if="'teacher' == user.role" v-slot:actions>
                 <span></span>
             </template>
@@ -44,8 +39,7 @@
                     { key: 'strand_id', text: 'Strand' },
                     { key: 'level_id', text: 'Level' },
                     { key: 'academic_year_id', text: 'Academic Year' },
-                    { key: 'students', text: 'Students' },
-                    { key: 'consolidated_grades', text: 'Consolidated Grades' }
+                    { key: 'students', text: 'Students' }
                 ]
             }
         },
