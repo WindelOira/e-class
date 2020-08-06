@@ -15,7 +15,7 @@ class Classes extends Model
      * @var array
      */
     protected $fillable = [
-        'academic_year_id', 'subject_id', 'track_id', 'section_id', 'strand_id', 'class_id', 'hours', 'year', 'semester',
+        'name', 'academic_year_id', 'subject_id', 'track_id', 'section_id', 'strand_id', 'hours', 'year', 'semester',
     ];
 
     /**

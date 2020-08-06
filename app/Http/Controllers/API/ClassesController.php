@@ -45,6 +45,14 @@ class ClassesController extends Controller
                 'response'      => 'Unauthorised'
             ], 401);
 
+        // Check if class name exists already
+        $existing_class = Classes::where('name', $request->input('name'))->first();
+
+        if( $existing_class )
+            return response()->json([
+                'response'      => 'Class name should be unique.'
+            ], 401);
+
         $class = Classes::create($request->all());
 
         return response()->json([
@@ -81,12 +89,12 @@ class ClassesController extends Controller
         return response()->json([
             'response'      => [
                 'id'                => $class->id,
+                'name'              => $class->name,
                 'academic_year_id'  => $class->academic_year_id->id,
                 'section_id'        => $class->section_id->id,
                 'strand_id'         => $class->strand_id->id,
                 'subject_id'        => $class->subject_id->id,
                 'track_id'          => $class->track_id->id,
-                'class_id'          => $class->class_id,
                 'hours'             => $class->hours,
                 'semester'          => $class->semester
             ]
@@ -108,7 +116,13 @@ class ClassesController extends Controller
                 'response'      => 'Unauthorised'
             ], 401);
             
-        // $input = $request->all();
+        // Check if class name exists already
+        $existing_class = Classes::where('name', $request->input('name'))->first();
+
+        if( $existing_class )
+            return response()->json([
+                'response'      => 'Class name should be unique.'
+            ], 401);
         
         $class = Classes::findOrFail($id);
         $class->update($request->all());

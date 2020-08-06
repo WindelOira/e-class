@@ -14,7 +14,7 @@
                 <span v-if="academic_year.td.val">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</span>
             </template>
             <template v-slot:students>
-                <!-- <router-link></router-link> -->
+                <router-link>View</router-link>
             </template>
             <template v-if="'teacher' == user.role" v-slot:actions>
                 <span></span>

@@ -41,7 +41,7 @@
                             <vs-row>
                                 <vs-col vs-xs="12" vs-sm="7" vs-lg="8">
                                     <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.class.class_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Class ID" class="mb-3"></vs-input>
+                                        <vs-input v-model="models.class.name" :danger="0 < errors.length" :danger-text="errors[0]" label="Class Name" class="mb-3"></vs-input>
                                     </validation-provider>
                                 </vs-col>
                                 <vs-col vs-xs="12" vs-sm="5" vs-lg="4">
@@ -129,6 +129,8 @@
                         this.$vs.notify({ title: 'Success', text: 'New class created.', color: 'success' })
 
                         this.$router.push({ name: 'classes' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             },
@@ -141,6 +143,8 @@
                         this.$vs.notify({ title: 'Success', text: 'Class updated.', color: 'success' })
 
                         this.$router.push({ name: 'classes' })
+                    }).catch(error => {
+                        this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
             }

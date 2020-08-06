@@ -33,7 +33,7 @@
         data() {
             return  {
                 headers     : [
-                    { key: 'class_id', text: 'Class ID' },
+                    { key: 'name', text: 'Class Name' },
                     { key: 'subject_id', text: 'Subject' },
                     { key: 'track_id', text: 'Track' },
                     { key: 'section_id', text: 'Section' },
