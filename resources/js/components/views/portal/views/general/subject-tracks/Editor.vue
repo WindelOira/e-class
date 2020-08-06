@@ -93,6 +93,11 @@
                         return false;
                     }
 
+                    if( this.models.percentage.remaining < 0 ) {
+                        this.$vs.notify({ title: 'Warning', text: 'Percentages should not be greater than 100%.', color: 'warning' })
+                        return false;
+                    }
+
                     this.$store.dispatch('createDataBySource', { source: 'subject_tracks', data: this.models.track }).then(response => {
                         this.$vs.notify({ title: 'Success', text: 'New subject track created.', color: 'success' })
 
@@ -109,6 +114,11 @@
 
                     if( 0 < this.models.percentage.remaining ) {
                         this.$vs.notify({ title: 'Warning', text: 'Percentages should be a total of 100%.', color: 'warning' })
+                        return false;
+                    }
+
+                    if( this.models.percentage.remaining < 0 ) {
+                        this.$vs.notify({ title: 'Warning', text: 'Percentages should not be greater than 100%.', color: 'warning' })
                         return false;
                     }
 
