@@ -161,4 +161,18 @@ class SectionController extends Controller
             'response'      => $section->grading_sheets
         ], 200);
     }
+
+    /**
+     * Get sections by academic year.
+     * 
+     * @param   $id
+     * @return  \Illuminate\Http\Response
+     */
+    public function get_by_academic_year($id) {
+        $sections = Section::where('academic_year_id', $id)->get();
+
+        return response()->json([
+            'response'      => $sections
+        ], 200);
+    }
 }

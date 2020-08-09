@@ -29,7 +29,7 @@
                                 <vs-col vs-xs="12" vs-sm="" vs-lg="6"></vs-col>
                                 <vs-col vs-xs="12" vs-sm="4" vs-lg="3">
                                     <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-select v-model="models.class.academic_year_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Academic Year" placeholder="Select Academic Year" class="mb-2">
+                                        <vs-select v-model="models.class.academic_year_id" @change="getSectionsByAcademicYear" :danger="0 < errors.length" :danger-text="errors[0]" label="Academic Year" placeholder="Select Academic Year" class="mb-2">
                                             <vs-select-item v-for="(academic_year, index) in $store.state.options.academic_years" :key="index" :value="academic_year.value" :text="academic_year.text"></vs-select-item>
                                         </vs-select>
                                     </validation-provider>
@@ -147,6 +147,11 @@
                         this.$vs.notify({ title: 'Warning', text: error.response.data.response, color: 'warning' })
                     })
                 })
+            },
+            getSectionsByAcademicYear() {
+                this.models.class.section_id = null
+
+                this.$store.dispatch('getSectionsByAcademicYear', { id: this.models.class.academic_year_id })
             }
         },
         created() {

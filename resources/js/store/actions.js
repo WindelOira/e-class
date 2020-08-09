@@ -205,7 +205,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             axios({
                 method      : 'GET',
-                url         : 'api/users/'+ payload.id
+                url         : `api/users/${payload.id}`
             }).then(response => {
                 commit('GET_USER', response)
 
@@ -217,7 +217,24 @@ const actions = {
     },
     setUser({ commit }, payload) {
         commit('SET_USER', payload)
+    },
+
+    // Sections
+    getSectionsByAcademicYear({ commit }, payload) {
+        return new Promise((resolve, reject) => {
+            axios({
+                method      : 'GET',
+                url         : `api/sections/academic-year/${payload.id}`
+            }).then(response => {
+                commit('SET_OPTIONS', { key: 'sections', options: response.data.response })
+
+                resolve(response)
+            }).catch(error => {
+                reject(error)
+            })
+        })
     }
+
 }
 
 export default actions
