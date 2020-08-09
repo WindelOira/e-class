@@ -66,7 +66,7 @@
 
                                 <validation-provider rules="required" v-slot="{errors}">
                                     <vs-select v-model="models.class.level_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Grade" placeholder="Select Grade" class="mb-2">
-                                        <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text"></vs-select-item>
+                                        <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text" :is-selected.sync="level.selected"></vs-select-item>
                                     </vs-select>
                                 </validation-provider>
                                 <p v-if="0 == $store.state.options.levels.length" class="mb-3">
@@ -74,7 +74,7 @@
                                 </p>
 
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.class.section_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Section" placeholder="Select Section" class="mb-2">
+                                    <vs-select v-model="models.class.section_id" @change="getLevelStrandBySection" :danger="0 < errors.length" :danger-text="errors[0]" label="Section" placeholder="Select Section" class="mb-2">
                                         <vs-select-item v-for="(section, index) in $store.state.options.sections" :key="index" :value="section.value" :text="section.text"></vs-select-item>
                                     </vs-select>
                                 </validation-provider>
@@ -84,7 +84,7 @@
 
                                 <validation-provider rules="required" v-slot="{errors}">
                                     <vs-select v-model="models.class.strand_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Strand" placeholder="Select Strand" class="mb-2">
-                                        <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text"></vs-select-item>
+                                        <vs-select-item v-for="(strand, index) in $store.state.options.strands" :key="index" :value="strand.value" :text="strand.text" :is-selected.sync="strand.selected"></vs-select-item>
                                     </vs-select>
                                 </validation-provider>
                                 <p v-if="0 == $store.state.options.strands.length">
@@ -158,6 +158,25 @@
 
                 this.$store.dispatch('getDatasBySource', { source: 'subjects', status: 'published', filters: `semester=${_semester}`, no_commit: true }).then(response => {
                     this.$store.commit('SET_OPTIONS', { key: 'subjects', options: response.data.response })
+                })
+            },
+            getLevelStrandBySection() {
+                this.$store.dispatch('getDataBySource', { source: 'sections', id: this.models.class.section_id }).then(response => {
+                    this.$store.dispatch('getDataBySource', { source: 'levels', id: response.data.response.level_id, no_commit: true }).then(response => {
+                        let _level = response.data.response
+                        _level.selected = true
+
+                        this.$store.commit('SET_OPTIONS', { key: 'levels', options: [ _level ] })
+                        this.models.class.level_id = _level.id
+                    })
+
+                    this.$store.dispatch('getDataBySource', { source: 'strands', id: response.data.response.strand_id, no_commit: true }).then(response => {
+                        let _strand = response.data.response
+                        _strand.selected = true
+
+                        this.$store.commit('SET_OPTIONS', { key: 'strands', options: [ _strand ] })
+                        this.models.class.strand_id = _strand.id
+                    })
                 })
             }
         },

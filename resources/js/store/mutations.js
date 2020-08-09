@@ -64,8 +64,9 @@ const mutations = {
                 
             if( state.options[payload.key].indexOf(option) < 0 ) {
                 state.options[payload.key].push({
-                    text    : option.name ? option.name : (option.code ? option.code : option.year),
-                    value   : option.id
+                    text        : option.name ? option.name : (option.code ? option.code : option.year),
+                    value       : option.id,
+                    selected    : 'undefined' == option.selected ? false : option.selected
                 })
             }
         })
