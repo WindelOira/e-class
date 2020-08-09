@@ -15,7 +15,7 @@ class Classes extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'academic_year_id', 'subject_id', 'track_id', 'section_id', 'strand_id', 'hours', 'year', 'semester',
+        'name', 'academic_year_id', 'subject_id', 'level_id', 'section_id', 'strand_id', 'hours', 'year', 'semester',
     ];
 
     /**
@@ -33,10 +33,10 @@ class Classes extends Model
     }
 
     /**
-     * Get the track that owns the class.
+     * Get the level that owns the class.
      */
-    public function track() {
-        return $this->belongsTo('App\Track');
+    public function level() {
+        return $this->belongsTo('App\Level');
     }
 
     /**
@@ -78,15 +78,15 @@ class Classes extends Model
     }
 
     /**
-     * Get the sections track.
+     * Get the sections level.
      * 
      * @param   string  $value
      * @return  object
      */
-    public function getTrackIdAttribute($value) {
-        $track = Track::find($value);
+    public function getLevelIdAttribute($value) {
+        $level = Level::find($value);
 
-        return $track;
+        return $level;
     }
 
     /**

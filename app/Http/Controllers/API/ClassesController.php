@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Classes;
-use App\Track;
+use App\Level;
 use App\Subject;
 use App\Section;
 use App\Strand;
@@ -94,7 +94,7 @@ class ClassesController extends Controller
                 'section_id'        => $class->section_id->id,
                 'strand_id'         => $class->strand_id->id,
                 'subject_id'        => $class->subject_id->id,
-                'track_id'          => $class->track_id->id,
+                'level_id'          => $class->level_id->id,
                 'hours'             => $class->hours,
                 'semester'          => $class->semester
             ]

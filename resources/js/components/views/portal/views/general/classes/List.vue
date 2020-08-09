@@ -11,7 +11,7 @@
                 <span v-if="academic_year.td.val">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</span>
             </template>
             <template v-slot:subject_id="subject">{{ subject.td.val ? subject.td.val.name : '' }}</template>
-            <template v-slot:track_id="track">{{ track.td.val ? track.td.val.name : '' }}</template>
+            <template v-slot:level_id="level">{{ level.td.val ? level.td.val.name : '' }}</template>
             <template v-slot:section_id="section">{{ section.td.val ? section.td.val.name : '' }}</template>
             <template v-slot:strand_id="strand">{{ strand.td.val ? strand.td.val.code : '' }}</template>
             <template v-slot:semester="semester">{{ 1 == semester.td.val ? 'First' : 'Second' }} Semester</template>
@@ -35,7 +35,7 @@
                 headers     : [
                     { key: 'name', text: 'Class Name' },
                     { key: 'subject_id', text: 'Subject' },
-                    { key: 'track_id', text: 'Track' },
+                    { key: 'level_id', text: 'Grade' },
                     { key: 'section_id', text: 'Section' },
                     { key: 'strand_id', text: 'Strand' },
                     { key: 'hours', text: 'Hours' },

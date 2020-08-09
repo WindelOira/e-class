@@ -17,4 +17,11 @@ class Level extends Model
     protected $fillable = [
         'name',
     ];
+
+    /**
+     * Get all of the classes that are assigned to this level.
+     */
+    public function classes() {
+        return $this->morphedByMany('App\Classes', 'levelable');
+    }
 }

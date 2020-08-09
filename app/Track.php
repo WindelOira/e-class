@@ -24,11 +24,4 @@ class Track extends Model
     public function strands() {
         return $this->hasMany('App\Strand');
     }
-
-    /**
-     * Get all of the classes that are assigned to this track.
-     */
-    public function classes() {
-        return $this->morphedByMany('App\Classes', 'trackable');
-    }
 }

@@ -14,7 +14,7 @@
                         <vs-card>
                             <p class="mb-3">
                                 <router-link :to="{ name: 'classes' }">
-                                    <small>&laquo; Return to all levels</small>
+                                    <small>&laquo; Return to all classes</small>
                                 </router-link>
                             </p>
 
@@ -65,12 +65,12 @@
                                 </p>
 
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.class.track_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Track" placeholder="Select Track" class="mb-2">
-                                        <vs-select-item v-for="(track, index) in $store.state.options.tracks" :key="index" :value="track.value" :text="track.text"></vs-select-item>
+                                    <vs-select v-model="models.class.level_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Grade" placeholder="Select Grade" class="mb-2">
+                                        <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text"></vs-select-item>
                                     </vs-select>
                                 </validation-provider>
-                                <p v-if="0 == $store.state.options.tracks.length" class="mb-3">
-                                    No tracks found. Please create <router-link :to="{ name: 'track_new' }">here.</router-link>
+                                <p v-if="0 == $store.state.options.levels.length" class="mb-3">
+                                    No tracks found. Please create <router-link :to="{ name: 'level_new' }">here.</router-link>
                                 </p>
 
                                 <validation-provider rules="required" v-slot="{errors}">
@@ -163,7 +163,6 @@
         },
         created() {
             this.$store.dispatch('getSelectOptions', { source: 'academic_years' })
-            this.$store.dispatch('getSelectOptions', { source: 'tracks' })
             this.$store.dispatch('getSelectOptions', { source: 'subjects' })
             this.$store.dispatch('getSelectOptions', { source: 'sections' })
             this.$store.dispatch('getSelectOptions', { source: 'strands' })
