@@ -21,7 +21,7 @@
                             <vs-row>
                                 <vs-col vs-xs="12" vs-sm="4" vs-lg="3">
                                     <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-select v-model="models.class.semester" :danger="0 < errors.length" :danger-text="errors[0]" label="Semester" placeholder="Select Semester" class="mb-3">
+                                        <vs-select v-model="models.class.semester" @change="getSubjectsBySemester" :danger="0 < errors.length" :danger-text="errors[0]" label="Semester" placeholder="Select Semester" class="mb-3">
                                             <vs-select-item v-for="(sem, index) in $store.state.options.semesters" :key="index" :value="sem.value" :text="sem.text"></vs-select-item>
                                         </vs-select>
                                     </validation-provider>
@@ -152,6 +152,13 @@
                 this.models.class.section_id = null
 
                 this.$store.dispatch('getSectionsByAcademicYear', { id: this.models.class.academic_year_id })
+            },
+            getSubjectsBySemester() {
+                let _semester = 1 == this.models.class.semester ? 'first' : 'second'
+
+                this.$store.dispatch('getDatasBySource', { source: 'subjects', status: 'published', filters: `semester=${_semester}`, no_commit: true }).then(response => {
+                    this.$store.commit('SET_OPTIONS', { key: 'subjects', options: response.data.response })
+                })
             }
         },
         created() {

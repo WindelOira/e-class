@@ -70,7 +70,7 @@ Route::get('sections/{section}', 'API\SectionController@show')->where('section',
 Route::get('sections/{status}/{filters?}', 'API\SectionController@index')->where('status', '[a-z]+');
 Route::get('sections/{id}/consolidated-grades', 'API\SectionController@grading_sheets');
 Route::patch('sections/{section}/restore', 'API\SectionController@restore')->where('section', '[0-9]+');
-Route::get('sections/academic-year/{academic_year?}', 'API\SectionController@get_by_academic_year')->where('academic_year', '[0-9+]');
+Route::get('sections/academic-year/{academic_year}', 'API\SectionController@get_by_academic_year')->where('academic_year', '[0-9+]');
 
 Route::resource('academic_years', 'API\AcademicYearController')->except([
     'index', 'show', 'create', 'edit',
