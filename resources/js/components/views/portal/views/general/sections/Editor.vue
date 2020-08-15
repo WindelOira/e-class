@@ -141,7 +141,7 @@
             },
             getStudents(strand = false) {
                 if( !this.$route.params.id ) {
-                    this.models.section.students = []
+                    this.students = []
                 }
 
                 this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: strand ? `strand_id=${strand}` : null, no_commit: true }).then(response => {
@@ -155,6 +155,13 @@
             ...mapGetters([
                 'options'
             ])
+        },
+        watch       : {
+            $route( to, from ) {
+                if( 'section_new' == to.name ) {
+                    this.getStudents()
+                }
+            }
         },
         created() {
             this.$store.dispatch('getSelectOptions', { source: 'academic_years' })

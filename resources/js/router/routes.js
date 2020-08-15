@@ -294,6 +294,10 @@ const routes = [
                         name        : 'students',
                         component   : StudentsList
                     }, {
+                        path        : ':section_id?/section',
+                        name        : 'students_by_section',
+                        component   : StudentsList
+                    }, {
                         path        : 'new',
                         name        : 'student_new',
                         component   : StudentEditor

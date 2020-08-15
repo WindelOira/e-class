@@ -6,7 +6,12 @@
             </vs-col>
         </vs-row>
 
-        <app-table :headers="headers" source="students" title="Students">
+        <app-table :headers="headers" :filters="true" source="students" title="Students">
+            <template v-slot:filters>
+                <vs-select v-model="models.filters.strand_id" @change="filter('strand_id')" label="Filter by strand:" placeholder="Select strand">
+                    <vs-select-item v-for="(strand, indexs) in $store.state.options.strands" :key="indexs" :value="strand.value" :text="strand.text"></vs-select-item>
+                </vs-select>
+            </template>
             <template v-slot:strand_id="strand">{{ strand.td.val ? strand.td.val.code : '' }}</template>
         </app-table>
     </div>
@@ -25,7 +30,24 @@
                     { key: 'student_number', text: 'Student LRN' },
                     { key: 'strand_id', text: 'Strand' },
                     { key: 'name', text: 'Name' },
-                ]
+                ],
+                models      : {
+                    filters     : {
+                        strand_id       : ''
+                    }
+                }
+            }
+        },
+        methods     : {
+            filter(type) {
+                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `${type}=${this.models.filters[type]}` })
+            }
+        },
+        mounted() {
+            this.$store.dispatch('getSelectOptions', { source: 'strands' })
+
+            if( this.$route.params.section_id ) {
+                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `section_id=${this.$route.params.section_id}` })
             }
         }
     }
