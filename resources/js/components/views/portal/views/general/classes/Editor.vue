@@ -46,7 +46,7 @@
                                 </vs-col>
                                 <vs-col vs-xs="12" vs-sm="5" vs-lg="4">
                                     <validation-provider rules="required" v-slot="{errors}">
-                                        <vs-input v-model="models.class.hours" :danger="0 < errors.length" :danger-text="errors[0]" label="Hours" class="mb-3"></vs-input>
+                                        <vs-input v-model="models.class.hours" :danger="0 < errors.length" :danger-text="errors[0]" label="Hours" class="mb-3" disabled></vs-input>
                                     </validation-provider>
                                 </vs-col>
                             </vs-row>
@@ -106,6 +106,7 @@
 
 <script>
     import { ValidationObserver, ValidationProvider } from 'vee-validate'
+import { mapGetters } from 'vuex'
 
     export default {
         components  : {
@@ -117,6 +118,20 @@
                 models  : {
                     class       : {}
                 }
+            }
+        },
+        computed    : {
+            ...mapGetters([
+                'options'
+            ])
+        },
+        watch       : {
+            'models.class.subject_id'   : function(n, o) {
+                var selected = this.options.subjects.filter(subject => {
+                    return subject.value == n
+                })
+                
+                this.$set(this.models.class, 'hours', selected[0].full.hours)
             }
         },
         methods     : {
