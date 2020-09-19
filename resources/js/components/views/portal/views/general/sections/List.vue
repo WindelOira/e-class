@@ -13,9 +13,6 @@
             <template v-slot:academic_year_id="academic_year">
                 <span v-if="academic_year.td.val">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</span>
             </template>
-            <template v-slot:students_section_id="students_section_id">
-                <router-link :to="{ name: 'students_by_section', params: { section_id: students_section_id.td.val } }">View</router-link>
-            </template>
             <template v-if="'teacher' == user.role" v-slot:actions>
                 <span></span>
             </template>
@@ -38,8 +35,7 @@
                     { key: 'user_id', text: 'Adviser' },
                     { key: 'strand_id', text: 'Strand' },
                     { key: 'level_id', text: 'Level' },
-                    { key: 'academic_year_id', text: 'Academic Year' },
-                    { key: 'students_section_id', text: 'Students' }
+                    { key: 'academic_year_id', text: 'Academic Year' }
                 ]
             }
         },

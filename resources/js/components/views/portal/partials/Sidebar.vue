@@ -38,7 +38,7 @@
                         title   : 'Record Management',
                         list    : [
                             { title: 'Attendance', name: 'attendances', roles: ['subject-teacher'] },
-                            { title: 'Consolidated Grades', name: 'consolidated-grades', roles: ['chief-adviser'] },
+                            // { title: 'Consolidated Grades', name: 'consolidated-grades', roles: ['chief-adviser'] },
                             { title: 'Grading Sheets', name: 'grading-sheets', roles: ['program-head', 'chief-adviser', 'teacher'] },
                             { title: 'Computation Variables', name: 'computation-variables', roles: ['chief-adviser'] }
                         ],

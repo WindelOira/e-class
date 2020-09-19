@@ -6,7 +6,7 @@
             </vs-col>
         </vs-row>
 
-        <app-table :headers="headers" source="computation-variables" title="Computation Variables"></app-table>
+        <app-table :headers="headers" source="computation_variables" alias="computation-variables" title="Computation Variables"></app-table>
     </div>
 </template>
 

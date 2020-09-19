@@ -19,15 +19,6 @@ class Section extends Model
     ];
 
     /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = [
-        'students_section_id',
-    ];
-
-    /**
      * Get the strand that owns the class.
      */
     public function strand() {
@@ -126,15 +117,5 @@ class Section extends Model
         endforeach;
 
         return $gradingSheets;
-    }
-
-    /**
-     * Get the students section id.
-     * 
-     * @param   string  $value
-     * @return  object
-     */
-    public function getStudentsSectionIdAttribute($value) {
-        return $this->id;
     }
 }
