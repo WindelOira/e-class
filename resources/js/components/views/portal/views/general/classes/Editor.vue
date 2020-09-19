@@ -65,21 +65,21 @@
                                 </p>
 
                                 <validation-provider rules="required" v-slot="{errors}">
-                                    <vs-select v-model="models.class.level_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Grade" placeholder="Select Grade" class="mb-2">
-                                        <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text" :is-selected.sync="level.selected"></vs-select-item>
-                                    </vs-select>
-                                </validation-provider>
-                                <p v-if="0 == $store.state.options.levels.length" class="mb-3">
-                                    No tracks found. Please create <router-link :to="{ name: 'level_new' }">here.</router-link>
-                                </p>
-
-                                <validation-provider rules="required" v-slot="{errors}">
                                     <vs-select v-model="models.class.section_id" @change="getLevelStrandBySection" :danger="0 < errors.length" :danger-text="errors[0]" label="Section" placeholder="Select Section" class="mb-2">
                                         <vs-select-item v-for="(section, index) in $store.state.options.sections" :key="index" :value="section.value" :text="section.text"></vs-select-item>
                                     </vs-select>
                                 </validation-provider>
                                 <p v-if="0 == $store.state.options.sections.length" class="mb-3">
                                     No sections found. Please create <router-link :to="{ name: 'section_new' }">here.</router-link>
+                                </p>
+
+                                <validation-provider rules="required" v-slot="{errors}">
+                                    <vs-select v-model="models.class.level_id" :danger="0 < errors.length" :danger-text="errors[0]" label="Grade" placeholder="Select Grade" class="mb-2">
+                                        <vs-select-item v-for="(level, index) in $store.state.options.levels" :key="index" :value="level.value" :text="level.text" :is-selected.sync="level.selected"></vs-select-item>
+                                    </vs-select>
+                                </validation-provider>
+                                <p v-if="0 == $store.state.options.levels.length" class="mb-3">
+                                    No tracks found. Please create <router-link :to="{ name: 'level_new' }">here.</router-link>
                                 </p>
 
                                 <validation-provider rules="required" v-slot="{errors}">
