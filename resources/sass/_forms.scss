@@ -51,3 +51,21 @@
         font-size: 16px;
     }
 }
+
+.msl-multi-select {
+    width: 100%;
+
+    .msl-searchable-list__items {
+        border-color: rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+
+        .msl-searchable-list__item {
+            padding: 0.75em;
+            border-bottom-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .msl-searchable-list__no-item {
+            font-size: 12px;
+        }
+    }
+}

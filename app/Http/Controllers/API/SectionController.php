@@ -40,9 +40,11 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $section = Section::create($request->except('students'));
+
+        $students = Arr::pluck($request->input('students'), 'id');
         
-        if( 0 < count($request->input('students')) ) :
-            foreach( $request->input('students') as $student ) :
+        if( 0 < count($students) ) :
+            foreach( $students as $student ) :
                 $student = Student::find($student);
                 $student->update([ 'section_id' => $section->id ]);
             endforeach;
@@ -87,7 +89,7 @@ class SectionController extends Controller
                 'level_id'          => $section->level_id->id,
                 'user_id'           => $section->user_id->id,
                 'name'              => $section->name,
-                'students'          => Arr::pluck($section->students, 'id'),
+                'students'          => $section->students,
                 'grading_sheets'    => $section->grading_sheets
             ]
         ], 200);
@@ -105,9 +107,11 @@ class SectionController extends Controller
         $section = Section::findOrFail($id);
         $section->update($request->except('students'));
 
+        $students = Arr::pluck($request->input('students'), 'id');
+
         if( 0 < count($section->students) ) : // Disassociate students to section
             foreach( $section->students as $student ) :
-                if( !in_array($student->id, $request->input('students')) ) :
+                if( !in_array($student->id, $students) ) :
                     $student = Student::find($student->id);
                     
                     $student->section()->dissociate()->save();
@@ -115,8 +119,8 @@ class SectionController extends Controller
             endforeach;
         endif;
 
-        if( 0 < count($request->input('students')) ) : // Associate students to section
-            foreach( $request->input('students') as $student ) :
+        if( 0 < count($students) ) : // Associate students to section
+            foreach( $students as $student ) :
                 $student = Student::find($student);
 
                 $student->section()->associate($section)->save();
@@ -136,7 +140,7 @@ class SectionController extends Controller
      */
     public function destroy($id)
     {
-        $section = Section::findOrFail($id);
+        $section = Section::withTrashed()->findOrFail($id);
         if( $section->trashed() ) :
             $section->forceDelete();
         else :

@@ -43,8 +43,15 @@
                             <vs-divider></vs-divider>
 
                             <vs-row v-if="students.length">
-                                <vs-col v-for="(student, index) in students" :key="index" vs-xs="6" vs-sm="3" vs-lg="2" class="text-left">
-                                    <vs-checkbox v-model="models.section.students" :vs-value="student.id">{{ student.name }}</vs-checkbox>
+                                <vs-col>
+                                    <v-multiselect-listbox 
+                                        v-model="models.section.students" 
+                                        :options="students" 
+                                        :reduce-display-property="(student) => `Student #${student.student_number} : ${student.name}`"
+                                        :reduce-value-property="(student) => student.id" 
+                                        search-input-class="vs-input--input" 
+                                        search-options-placeholder="Search students"
+                                        selected-options-placeholder="Search selected students"></v-multiselect-listbox>
                                 </vs-col>
                             </vs-row>
                             <p v-else>
@@ -98,11 +105,13 @@
 <script>
     import { mapGetters } from 'vuex'
     import { ValidationObserver, ValidationProvider } from 'vee-validate'
+    import vMultiselectListbox from 'vue-multiselect-listbox'
 
     export default {
         components  : {
             'validation-observer'   : ValidationObserver,
-            'validation-provider'   : ValidationProvider
+            'validation-provider'   : ValidationProvider,
+            'v-multiselect-listbox'  : vMultiselectListbox
         },
         data() {
             return {
@@ -145,8 +154,12 @@
                 }
 
                 this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: strand ? `strand_id=${strand}` : null, no_commit: true }).then(response => {
-                    this.students = this.$route.params.id ? response.data.response : response.data.response.filter(student => {
-                        return !student.section_id
+                    this.students = response.data.response.filter(student => {
+                        if( this.$route.params.id ) {
+                            return !student.section_id || (student.section_id == this.$route.params.id)
+                        } else {
+                            return !student.section_id
+                        }
                     })
                 })
             }

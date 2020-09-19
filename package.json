@@ -26,6 +26,7 @@
         "vee-validate": "^3.3.5",
         "vue": "^2.6.11",
         "vue-moment": "^4.1.0",
+        "vue-multiselect-listbox": "0.0.20",
         "vue-router": "^3.2.0",
         "vue2-timepicker": "^1.1.2",
         "vuejs-datepicker": "^1.6.2",

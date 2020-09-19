@@ -4,6 +4,7 @@ import 'vuesax/dist/vuesax.css'
 import 'material-icons/iconfont/material-icons.css'
 import 'CSS/bootstrap-4-utilities/bootstrap-4-utilities.min.css'
 import 'vue2-timepicker/dist/VueTimepicker.css'
+import 'vue-multiselect-listbox/dist/vue-multi-select-listbox.css'
 
 import Vue from 'vue'
 import Vuesax from 'vuesax'
