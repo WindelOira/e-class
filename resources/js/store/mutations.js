@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const mutations = {
     SET_TOKEN(state, payload) {
         state.user.token = payload
@@ -71,6 +73,14 @@ const mutations = {
                 })
             }
         })
+    },
+
+    // Settings commits
+    SET_SETTINGS(state, payload) {
+        state.settings = payload
+    },
+    UNSET_SETTINGS(state) {
+        state.settings = {}
     }
 }
 

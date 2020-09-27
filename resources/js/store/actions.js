@@ -25,7 +25,7 @@ const actions = {
                 data    : payload     
             }).then(response => {
                 localStorage.setItem('eclass_token', response.data.response.token)
-                window.axios.defaults.headers.common['Authorization'] = 'Bearer '+ localStorage.getItem('eclass_token')
+                window.axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('eclass_token')}`
 
                 commit('SET_USER', response.data.response.user)
                 commit('SET_TOKEN', response.data.response.token)
@@ -44,9 +44,11 @@ const actions = {
                 data    : payload
             }).then(response => {
                 localStorage.removeItem('eclass_token')
+                localStorage.removeItem('eclass_settings')
 
                 commit('UNSET_TOKEN')
                 commit('UNSET_USER')
+                commit('UNSET_SETTINGS')
 
                 resolve(response)
             }).catch(error => {
@@ -233,8 +235,38 @@ const actions = {
                 reject(error)
             })
         })
-    }
+    },
 
+    // Settings
+    getSettings({ commit }) {
+        return new Promise((resolve, reject) => {
+            axios({
+                method      : 'GET',
+                url         : `api/settings`
+            }).then(response => {
+                commit('SET_SETTINGS', response.data.response)
+
+                resolve(response.data.response)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    },
+    updateSettings({ commit }, payload) {
+        return new Promise((resolve, reject) => {
+            axios({
+                method      : 'PATCH',
+                url         : `api/settings`,
+                data        : payload
+            }).then(response => {
+                commit('SET_SETTINGS', response.data.response)
+
+                resolve(response.data.response)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
 }
 
 export default actions

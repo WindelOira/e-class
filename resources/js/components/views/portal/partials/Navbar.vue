@@ -12,7 +12,7 @@
         <vs-navbar-item v-if="'administrator' == user.role" index="0">
             <router-link :to="{ name: 'settings' }">Settings</router-link>
         </vs-navbar-item>
-        <vs-navbar-item index="1">
+        <vs-navbar-item v-if="!isRole('administrator')" index="1">
             <router-link :to="{ name: 'account' }">Account</router-link>
         </vs-navbar-item>
         <vs-navbar-item index="2">
@@ -34,7 +34,7 @@
         },
         computed    : {
             ...mapGetters([
-                'user'
+                'user', 'isRole'
             ])
         }
     }

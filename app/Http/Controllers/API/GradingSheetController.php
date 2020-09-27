@@ -35,7 +35,16 @@ class GradingSheetController extends Controller
      */
     public function store(Request $request)
     {
-        $sheet = GradingSheet::create($request->except('grades'));
+        $data = $request->all();
+        $sheet = GradingSheet::create([
+            'hps'               => json_encode($data['hps']),
+            'level_id'          => $data['level_id'],
+            'section_id'        => $data['section_id'],
+            'semester'          => $data['semester'],
+            'subject_id'        => $data['subject_id'],
+            'subject_track_id'  => $data['subject_track_id'],
+            'user_id'           => $data['user_id']
+        ]);
         $sheet->grades()->saveMany(array_map(function($grade) {
             $grade['performance_task'] = json_encode($grade['performance_task']);
             $grade['quarterly_assessment'] = json_encode($grade['quarterly_assessment']);
@@ -85,6 +94,7 @@ class GradingSheetController extends Controller
                 'subject_id'        => $sheet->subject_id->id,
                 'subject_track_id'  => $sheet->subject_track_id->id,
                 'semester'          => $sheet->semester,
+                'hps'               => $sheet->hps,
                 'grades'            => $sheet->grades,
                 'approvals'         => $sheet->grading_sheet_approvals,
                 'sheet'             => $sheet,
@@ -101,8 +111,17 @@ class GradingSheetController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = $request->all();
         $sheet = GradingSheet::findOrFail($id);
-        $sheet->update($request->except('grades'));
+        $sheet->update([
+            'hps'               => json_encode($data['hps']),
+            'level_id'          => $data['level_id'],
+            'section_id'        => $data['section_id'],
+            'semester'          => $data['semester'],
+            'subject_id'        => $data['subject_id'],
+            'subject_track_id'  => $data['subject_track_id'],
+            'user_id'           => $data['user_id']
+        ]);
 
         foreach( $request->input('grades') as $grd ) :
             $grd['student_id'] = $grd['student_id']['id'];
@@ -127,7 +146,7 @@ class GradingSheetController extends Controller
         $sheet = GradingSheet::withTrashed()->findOrFail($id);
         if( $sheet->trashed() ) :
             $sheet->forceDelete();
-            $sheet->history()->forceDelete();
+            // $sheet->history()->forceDelete();
         else :
             $sheet->delete();
         endif;

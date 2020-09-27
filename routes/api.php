@@ -126,6 +126,9 @@ Route::get('users/{user}', 'API\UserController@show')->where('user', '[0-9]+');
 Route::get('users/{status}/{filters?}', 'API\UserController@index')->where('status', '[a-z]+');
 Route::patch('users/{user}/restore', 'API\UserController@restore')->where('user', '[0-9]+');
 
+Route::get('settings', 'API\SettingController@index');
+Route::patch('settings', 'API\SettingController@update');
+
 Route::group(['middleware' => 'auth:api'], function(){
     Route::get('user', 'API\UserController@details');
     Route::post('logout', 'API\UserController@logout');

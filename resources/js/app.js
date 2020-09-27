@@ -11,6 +11,7 @@ import Vuesax from 'vuesax'
 import VueMoment from 'vue-moment'
 import { extend } from 'vee-validate'
 import { required, numeric, confirmed } from 'vee-validate/dist/rules'
+import axios from 'JS/axios'
 
 extend('required', {
     ...required,

@@ -11,22 +11,18 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    store.commit('SET_TEMPLATE_OPTION', {key: 'isLoading', value: true})
-    store.commit('SET_TEMPLATE_OPTION', {key: 'noSidebar', value: false})
-
     if( to.matched.some( record => record.meta.requiresAuth ) ) {
-        store.dispatch('checkAuth').then(() => {
-            next()
-        }).catch(() => {
-            next({
-                path    : '/'
+        if( !store.getters.auth ) {
+            return next({ 
+                name  : 'login',
+                query : {
+                    redirect  : to.fullPath
+                }
             })
-        })
-
-        next()
-    } else {
-        next()
+        }
     }
+
+    next()
 })
 
 export default router

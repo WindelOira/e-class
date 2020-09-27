@@ -15,7 +15,7 @@ class GradingSheet extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'level_id', 'section_id', 'subject_id', 'subject_track_id', 'semester', 'quarter',
+        'user_id', 'level_id', 'section_id', 'subject_id', 'subject_track_id', 'semester', 'hps',
     ];
 
     /**
@@ -111,5 +111,15 @@ class GradingSheet extends Model
         $track = SubjectTrack::find($value);
 
         return $track;
+    }
+
+    /**
+     * Get the grading sheet's hps.
+     * 
+     * @param   string  $value
+     * @return  object
+     */
+    public function getHpsAttribute($value) {
+        return json_decode($value);
     }
 }

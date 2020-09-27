@@ -9,7 +9,7 @@ const states = {
         isLoading   : false
     },
     user        : {
-        token       : null,
+        token       : localStorage.getItem('eclass_token') || null,
         data        : null
     },
     options     : {
@@ -36,7 +36,8 @@ const states = {
             { text: 'First Semester', value: 1 },
             { text: 'Second Semester', value: 2 }
         ]
-    }
+    },
+    settings    : localStorage.getItem('eclass_settings') || {}
 }
 
 export default states

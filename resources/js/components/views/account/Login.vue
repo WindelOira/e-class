@@ -54,7 +54,9 @@
                         return false;
 
                     this.$store.dispatch('login', this.models).then(response => {
-                        this.$router.push({ name: 'dashboard' })
+                        this.$store.dispatch('getSettings').then(response => {
+                            this.$router.push({ name: 'dashboard' })
+                        })
                     }).catch(error => {
                         this.$vs.notify({ title: 'Login failed', text: 'Please make sure you entered correct credentials.', color: 'danger' })
                     })
