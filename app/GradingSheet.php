@@ -71,11 +71,11 @@ class GradingSheet extends Model
      * @param   string  $value
      * @return  object
      */
-    public function getSectionIdAttribute($value) {
-        $section = Section::find($value);
+    // public function getSectionIdAttribute($value) {
+    //     $section = Section::find($value);
 
-        return $section;
-    }
+    //     return $section;
+    // }
 
     /**
      * Get the grading sheet's subject.

@@ -29,9 +29,9 @@
                             <template slot-scope="{data}">
                                 <vs-tr v-for="(tr, indextr) in grading_sheet.grades" :key="indextr">
                                     <vs-td>{{ grading_sheet.grades[indextr].student_id.name }}</vs-td>
-                                    <vs-td>{{ quarterGrade(grading_sheet.grades[indextr], indexg, 'first') }}%</vs-td>
-                                    <vs-td>{{ quarterGrade(grading_sheet.grades[indextr], indexg, 'second') }}%</vs-td>
-                                    <vs-td>{{ finalsGrade(grading_sheet.grades[indextr], indexg) }}%</vs-td>
+                                    <vs-td>{{ studentQuarterlyGrade(indextr, 'first').grade }}</vs-td>
+                                    <vs-td>{{ studentQuarterlyGrade(indextr, 'second').grade }}</vs-td>
+                                    <vs-td>{{ studentFinalsGrade(indextr) }}</vs-td>
                                 </vs-tr>
                             </template>
                         </vs-table>
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import XLSX from 'xlsx'
 
     export default {
@@ -60,39 +61,94 @@
                     { key: 'written_work' },
                     { key: 'performance_task' },
                     { key: 'quarterly_assessment' }
-                ]
+                ],
+                vars                    : {
+                    headers     : {
+                        written_work            : {
+                            title                   : 'Written Work',
+                            percentage              : 0
+                        },
+                        performance_task        : {
+                            title                   : 'Performance Task',
+                            percentage              : 0
+                        },
+                        quarterly_assessment    : {
+                            title                   : 'Quarterly Assessment',
+                            percentage              : 0
+                        }
+                    }
+                }
+            }
+        },
+        computed    : {
+            ...mapGetters([
+                'settings'
+            ]),
+            hpsTotal() {
+                return (type, quarter) => {
+                    var hps = this.consolidated_grades.grading_sheets[0].hps[type][quarter]
+
+                    return hps.reduce((total, num) => {
+                        return parseFloat(total) + parseFloat(num)
+                    })
+                }
+            },
+            studentGSTotal() {
+                return (student, type, quarter) => {
+                    var gs = this.consolidated_grades.grading_sheets[0].grades[student][type].quarters[quarter]
+
+                    return gs.reduce((total, num) => {
+                        return parseFloat(total) + parseFloat(num)
+                    })
+                }
+            },
+            studentPSTotal() {
+                return (student, type, quarter) => {
+                    var hpsTotal = parseFloat( this.hpsTotal(type, quarter) ),
+                        gsTotal = parseFloat( this.studentGSTotal(student, type, quarter) ),
+                        psTotal = (0 == hpsTotal) ? 0 : (( gsTotal / hpsTotal ) * 100)
+
+                    return psTotal
+                }
+            },
+            studentWSTotal() {
+                return (student, type, quarter) => {
+                    var ws = parseFloat(this.vars.headers[type].percentage / 100),
+                        psTotal = this.studentPSTotal(student, type, quarter),
+                        wsTotal = (0 == psTotal) ? 0 : ( psTotal * ws )
+
+                    return wsTotal
+                }
+            },
+            studentInitialGrade() {
+                return (student, quarter) => {
+                    var ww = this.studentWSTotal(student, 'written_work', quarter),
+                        pt = this.studentWSTotal(student, 'performance_task', quarter),
+                        qa = this.studentWSTotal(student, 'quarterly_assessment', quarter)
+
+                    return (ww + pt + qa)
+                }
+            },
+            studentQuarterlyGrade() {
+                return (student, quarter) => {
+                    var tg = JSON.parse( this.settings.transmuted_grades ),
+                        ig = parseFloat( this.studentInitialGrade(student, quarter) )
+
+                    return (0 == ig) ? {grade: 0} : tg.find(t => {
+                        return (t.from >= ig) && (ig <= t.to)
+                    })
+                }
+            },
+            studentFinalsGrade() {
+                return (student) => {
+                    var first = this.studentQuarterlyGrade(student, 'first').grade,
+                        second = this.studentQuarterlyGrade(student, 'second').grade
+
+                    return ((first + second) / 2)
+                }
             }
         },
         methods     : {
-            quarterGrade(grades, index, quarter = 'first') {
-                let quarterGrade = 0
-
-                if( 0 < this.consolidated_grades.grading_sheets.length ) {
-                    this.tracks.forEach((v, k) => {
-                        let percentage = (this.consolidated_grades.grading_sheets[index].subject_track_id[v.key] / 100),
-                            grade = (grades[v.key].quarters[quarter].reduce((a, b) => { return parseFloat(a) + parseFloat(b) }) / grades[v.key].quarters[quarter].filter(q => { return q }).length)
-
-                        quarterGrade += (grade * percentage)
-                    })
-                }
-
-                return isNaN(quarterGrade) ? 0 : quarterGrade.toFixed(2)
-            },
-            finalsGrade(grades, index) {
-                let finalsGrade = 0
-
-                if( 0 < this.consolidated_grades.grading_sheets.length ) {
-                    this.tracks.forEach((v, k) => {
-                        let percentage = (this.consolidated_grades.grading_sheets[index].subject_track_id[v.key] / 100),
-                            firstQGrade = ((grades[v.key].quarters.first.reduce((a, b) => parseFloat(a) + parseFloat(b)) / grades[v.key].quarters.first.filter(q => q != 0).length) * percentage),
-                            secondQGrade = ((grades[v.key].quarters.second.reduce((a, b) => parseFloat(a) + parseFloat(b)) / grades[v.key].quarters.second.filter(q => q != 0).length) * percentage)
-
-                        finalsGrade += (firstQGrade + secondQGrade) / 2
-                    })
-                }
-
-                return isNaN(finalsGrade) ? 0 : finalsGrade.toFixed(2)
-            },
             exportGrades() { 
                 var wb = XLSX.utils.book_new() // make Workbook of Excel
 
@@ -102,26 +158,21 @@
                     gradingSheet.grades.forEach((grade, gradeIndex) => {
                         columns.push({
                             'Student'           : grade.student_id.name,
-                            'First Quarter'     : this.quarterGrade(grade, gradingSheetIndex, 'first'),
-                            'Second Quarter'    : this.quarterGrade(grade, gradingSheetIndex, 'second'),
-                            'Final Grade'       : this.finalsGrade(grade, gradingSheetIndex)
+                            'First Quarter'     : this.studentQuarterlyGrade(gradeIndex, 'first').grade,
+                            'Second Quarter'    : this.studentQuarterlyGrade(gradeIndex, 'second').grade,
+                            'Final Grade'       : this.studentFinalsGrade(gradeIndex)
                         })
                     })
 
                     XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(columns), gradingSheet.subject_id.name)
                 })
                 // add Worksheet to Workbook
-                
-                // XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(this.xlsx.second), '2nd') 
-                // XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(this.xlsx.finals), 'Final Grades')  
 
                 // export Excel file
                 XLSX.writeFile(wb, `${this.consolidated_grades.name} Consolidated Grades.xlsx`) // name of the file is 'book.xlsx'
             }
         },
         created() {
-            // this.$store.commit('SET_TEMPLATE_OPTION', { key: 'noSidebar', value: true })
-
             this.$store.dispatch('getDataBySource', { source: 'sections', id: this.$route.params.id, no_commit: true }).then(response => {
                 let sheets = response.data.response
 
@@ -130,6 +181,9 @@
                 }
 
                 this.consolidated_grades = sheets
+                this.vars.headers.written_work.percentage = sheets.grading_sheets[0].subject_track_id.written_work
+                this.vars.headers.performance_task.percentage = sheets.grading_sheets[0].subject_track_id.performance_task
+                this.vars.headers.quarterly_assessment.percentage = sheets.grading_sheets[0].subject_track_id.quarterly_assessment
             })
         }
     }

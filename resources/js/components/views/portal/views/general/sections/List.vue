@@ -1,6 +1,6 @@
 <template>
     <div>
-        <vs-row v-if="'administrator' == user.role" class="mb-3">
+        <vs-row v-if="isRole('administrator')" class="mb-3">
             <vs-col>
                 <vs-button @click="$router.push({ name: 'section_new' })">Add New</vs-button>
             </vs-col>
@@ -13,8 +13,10 @@
             <template v-slot:academic_year_id="academic_year">
                 <span v-if="academic_year.td.val">{{ academic_year.td.val.year }} - {{ academic_year.td.val.year + 1 }}</span>
             </template>
-            <template v-if="'teacher' == user.role" v-slot:actions>
-                <span></span>
+            <template v-if="isRole('teacher')" v-slot:consolidated_grades="section">
+                <vs-button :to="{name: 'section_consolidated-grades', params: {id: section.td.id, semester: 'first'}}" type="flat" class="py-1 px-2">First Semester</vs-button>
+                <span class="mx-1">|</span>
+                <vs-button :to="{name: 'section_consolidated-grades', params: {id: section.td.id, semester: 'second'}}" type="flat" class="py-1 px-2">Second Semester</vs-button>
             </template>
         </app-table>
     </div>
@@ -41,7 +43,7 @@
         },
         computed    : {
             ...mapGetters([
-                'user'
+                'isRole'
             ])
         },
         created() {
@@ -49,6 +51,10 @@
             this.$store.dispatch('getSelectOptions', { source: 'levels' })
             // this.$store.dispatch('getSelectOptions', { source: 'levels' })
             this.$store.dispatch('getSelectOptions', { source: 'users', alias: 'advisers', filters: [{ key: 'role', value: 'teacher' }] })
+
+            if( this.isRole('teacher') ) {
+                this.headers.push({ key: 'consolidated_grades', text: 'Consolidated Grades'})
+            }
         }
     }
 </script>
