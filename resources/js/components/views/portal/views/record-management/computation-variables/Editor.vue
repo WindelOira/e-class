@@ -37,7 +37,7 @@
             <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
                 <vs-card>
                     <div>
-                        <vs-button @click="$route.params.id ? update() : create()" :disabled="!valid">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                        <vs-button @click="$route.params.id ? update() : create()" :disabled="!valid || (0 == settings.status)">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                         <vs-button @click="$router.push({ name: 'computation-variables' })" color="grey" class="float-right">Cancel</vs-button>
                     </div>
                 </vs-card>
@@ -47,6 +47,8 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
+
     export default {
         data() {
             return {
@@ -70,6 +72,9 @@
             }
         },
         computed    : {
+            ...mapGetters([
+                'settings'
+            ]),
             valid() {
                 if( !this.models.computation_variable.type )
                     return false;

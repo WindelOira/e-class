@@ -30,7 +30,7 @@
                 <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
                     <vs-card>
                         <div>
-                            <vs-button button="submit" :disabled="!valid">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                            <vs-button button="submit" :disabled="!valid || (0 == settings.status)">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                             <vs-button @click="$router.push({ name: 'academic-years' })" color="grey" class="float-right">Cancel</vs-button>
                         </div>
                     </vs-card>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import { ValidationObserver, ValidationProvider } from 'vee-validate'
     import Datepicker from 'vuejs-datepicker'
 
@@ -85,6 +86,9 @@
             }
         },
         computed    : {
+            ...mapGetters([
+                'settings'
+            ]),
             valid() {
                 if( !this.models.academic_year.year )
                     return false;

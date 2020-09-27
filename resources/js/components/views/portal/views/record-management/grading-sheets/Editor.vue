@@ -11,15 +11,15 @@
                 <vs-button v-if="$route.params.id" @click="exportSheet" color="dark" class="mr-2">
                     <vs-icon icon="import_export" size="16px"></vs-icon> Export
                 </vs-button>
-                <vs-button v-if="'teacher' == user.role" @click="$route.params.id ? update() : create()" :disabled="!valid">Save</vs-button>
+                <vs-button v-if="isRole('teacher')" @click="$route.params.id ? update() : create()" :disabled="(0 == settings.status)">Save</vs-button>
             </vs-col>
         </vs-row>
 
         <vs-row class="mt-3">
             <vs-col vs-xs="6" vs-sm="8" vs-lg="9"></vs-col>
             <vs-col vs-xs="6" vs-sm="4" vs-lg="3">
-                <div v-if="'chief-adviser' == user.role || 'program-head' == user.role">
-                    <div v-if="('chief-adviser' == user.role && heads.chief_adviser.approval) || ('program-head' == user.role && heads.program_head.approval)">
+                <div v-if="isRole('chief-adviser') || isRole('program-head')">
+                    <div v-if="(isRole('chief-adviser') && heads.chief_adviser.approval) || (isRole('program-head') && heads.program_head.approval)">
                         <h5 class="mb-2">Grading Sheet Approval</h5>
                         <vs-switch @input="updateApproval" v-model="models.approval.status">
                             <span slot="on">Approved</span>
@@ -121,8 +121,9 @@
                                 <vs-th width="350">Learner’s Name</vs-th>
                                 <vs-th v-for="(vh, indexvh) in vars.headers" :key="indexvh">
                                     <vs-row>
-                                        <vs-col vs-xs="12" vs-sm="12" vs-lg="12">
-                                            <h4 class="mb-3 text-center">{{ vh.title }} ({{ vh.percentage }}%)</h4>
+                                        <vs-col vs-xs="12" vs-sm="12" vs-lg="12" class="text-center">
+                                            <h4 class="mb-1">{{ vh.title }} ({{ vh.percentage }}%)</h4>
+                                            <vs-button @click="editHPS(indexq)" color="primary" type="flat" class="p-0 mb-3">Edit Highest Possible Scores</vs-button>
                                         </vs-col>
                                         <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">Total</vs-col>
                                         <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">PS</vs-col>
@@ -138,34 +139,20 @@
                                         <strong>{{ tr.student_id.student_id }}</strong>
                                         <br>
                                         {{ tr.student_id.name }}
-                                        <a @click="editStudentRatings(tr, indexq, indextr)" href="javascript:;" class="float-right">{{ 'teacher' == user.role ? 'Edit' : 'View' }} Grades</a>
+                                        <vs-button @click="editStudentRatings(tr, indexq, indextr)" color="primary" type="flat" class="p-0 mb-3 float-right">{{  isRole('teacher') ? 'Edit' : 'View' }} Grades</vs-button>
                                     </vs-td>
                                     <vs-td v-for="(vh, indexvh) in vars.headers" :key="indexvh">
                                         <vs-row>
-                                            <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center"></vs-col>
-                                            <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">100.00</vs-col>
-                                            <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">
-                                                <span v-if="0 == models.grading_sheet.grades[indextr][indexvh].quarters[indexq].filter(v => { return v }).length">0%</span>
-                                                <span v-else>{{ ( ((models.grading_sheet.grades[indextr][indexvh].quarters[indexq].reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (models.grading_sheet.grades[indextr][indexvh].quarters[indexq].filter(v => { return v }).length) ).toFixed(2) }}%</span>
-                                            </vs-col>
+                                            <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">{{ studentGSTotal(indextr, indexvh, indexq) }}</vs-col>
+                                            <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">{{ studentPSTotal(indextr, indexvh, indexq) }}</vs-col>
+                                            <vs-col vs-xs="4" vs-sm="4" vs-lg="4" class="text-center">{{ `${studentWSTotal(indextr, indexvh, indexq).toFixed(2)}%` }}</vs-col>
                                         </vs-row>
                                     </vs-td>
-                                    <vs-td></vs-td>
                                     <vs-td>
-                                        {{ 
-                                            (
-                                                ( 
-                                                    ( 
-                                                        ( 0 < models.grading_sheet.grades[indextr].written_work.quarters[indexq].filter(v => { return v }).length ? ( ((models.grading_sheet.grades[indextr].written_work.quarters[indexq].reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (models.grading_sheet.grades[indextr].written_work.quarters[indexq].filter(v => { return v }).length) ) : 0 ) +
-                                                        ( 0 < models.grading_sheet.grades[indextr].performance_task.quarters[indexq].filter(v => { return v }).length ? ( ((models.grading_sheet.grades[indextr].performance_task.quarters[indexq].reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (models.grading_sheet.grades[indextr].performance_task.quarters[indexq].filter(v => { return v }).length) ) : 0 ) +
-                                                        ( 0 < models.grading_sheet.grades[indextr].quarterly_assessment.quarters[indexq].filter(v => { return v }).length ? ( ((models.grading_sheet.grades[indextr].quarterly_assessment.quarters[indexq].reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (models.grading_sheet.grades[indextr].quarterly_assessment.quarters[indexq].filter(v => { return v }).length) ) : 0 )
-                                                    )
-                                                    / 300
-                                                ) 
-                                                * 100
-                                            )  
-                                            
-                                        }}
+                                        {{ studentInitialGrade(indextr, indexq).toFixed(2) }}
+                                    </vs-td>
+                                    <vs-td>
+                                        {{ studentQuarterlyGrade(indextr, indexq).grade }}
                                     </vs-td>
                                 </vs-tr>
                             </template>
@@ -174,6 +161,26 @@
                 </vs-card>
             </vs-tab>
         </vs-tabs>
+
+        <vs-popup v-if="vars.popup.hps" :active.sync="vars.popup.hps" title="Update Highest Possible Score">
+            <vs-tabs>
+                <vs-tab v-for="(header, indexh) in vars.headers" :key="indexh" :label="header.title">
+                    <div>
+                        <vs-list>
+                            <vs-list-item v-for="(quarter, indexq) in models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter]" :key="indexq" :subtitle="`Q${(indexq + 1)}`">
+                                <div v-if="isRole('teacher')" class="text-center">
+                                    <vs-input-number v-model="models.grading_sheet.hps[indexh][vars.popup.quarter][indexq]" :step="0.1" :min="0" :max="100" :tabindex="200 + indexq" class="mb-0"/>
+                                </div>
+                                <span v-else>{{ models.grading_sheet.hps[indexh][vars.popup.quarter] }}</span>
+                            </vs-list-item>
+                            <vs-list-item subtitle="Total">
+                                {{ hpsTotal(indexh, vars.popup.quarter) }}
+                            </vs-list-item>
+                        </vs-list>
+                    </div>
+                </vs-tab>
+            </vs-tabs>
+        </vs-popup>
 
         <vs-popup v-if="vars.popup.active" :active.sync="vars.popup.active" title="Update Grading Sheet">
             <vs-row>
@@ -193,7 +200,10 @@
                     <div>
                         <vs-list>
                             <vs-list-item v-for="(quarter, indexq) in models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter]" :key="indexq" :subtitle="`Q${(indexq + 1)}`">
-                                <vs-input-number v-if="'teacher' == user.role" v-model="models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter][indexq]" :step="0.1" :min="0" :max="100"/>
+                                <div v-if="isRole('teacher')" class="text-center">
+                                    <vs-input-number v-model="models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter][indexq]" :step="0.1" :min="0" :max="models.grading_sheet.hps[indexh][vars.popup.quarter][indexq]" :disabled="!models.grading_sheet.hps[indexh][vars.popup.quarter][indexq]" :tabindex="200 + indexq" class="mb-0"/>
+                                    <small>HPS: {{ models.grading_sheet.hps[indexh][vars.popup.quarter][indexq] }}</small>
+                                </div>
                                 <span v-else>{{ models.grading_sheet.grades[vars.popup.gradeIndex][indexh].quarters[vars.popup.quarter][indexq] }}%</span>
                             </vs-list-item>
                         </vs-list>
@@ -237,6 +247,20 @@
                 models  : {
                     grading_sheet    : {
                         grades              : [],
+                        hps                 : {
+                            written_work            : {
+                                first                   : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                                second                  : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+                            },
+                            performance_task        : {
+                                first                   : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+                                second                  : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+                            },
+                            quarterly_assessment    : {
+                                first                   : [ 0 ],
+                                second                  : [ 0 ]
+                            }
+                        },
                         section_id          : this.$route.params.section ? this.$route.params.section : null,
                         level_id            : this.$route.params.level ? this.$route.params.level : null,
                         user_id             : this.$route.params.adviser ? this.$route.params.adviser : null,
@@ -269,6 +293,7 @@
                     },
                     popup       : {
                         active          : false,
+                        hps             : false,
                         grade           : null,
                         quarter         : 'first',
                         gradeIndex      : 0
@@ -281,6 +306,10 @@
             }
         },
         methods     : {
+            editHPS(quarter) {
+                this.vars.popup.hps = true
+                this.vars.popup.quarter = quarter
+            },
             editStudentRatings(grade, quarter, index) {
                 this.vars.popup.active = true
                 this.vars.popup.grade = grade
@@ -298,9 +327,7 @@
                 subjectId = !subjectId ? this.models.grading_sheet.subject_id.id : subjectId
 
                 this.$store.dispatch('getDataBySource', { source: 'subjects', id: subjectId, no_commit: true }).then(response => {
-                    this.models.grading_sheet.subject_track_id = response.data.response.subject_track.id
-
-                    this.$store.commit('SET_OPTIONS', { key: 'subject_tracks', options: [response.data.response.subject_track] })
+                    this.models.grading_sheet.subject_track_id = response.data.response.subject_track_id
                 })
             },
             getSubjectTrackCols(subjectTrackId = false) {
@@ -333,42 +360,42 @@
                             [ ``, ``, ``, `Senior High School Class Record`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
-                            [ ``, ``, ``, `Region: IV-A`, ``, ``, ``, ``, `Division: Lucena City`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
-                            [ ``, ``, ``, `School Name: Calayan Educational Foundation, Inc.`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `School ID: 403239`, ``, ``, ``, ``, `School Year: `, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
+                            [ ``, ``, ``, `Region: ${this.settings.region}`, ``, ``, ``, ``, `Division: ${this.settings.division}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
+                            [ ``, ``, ``, `School Name: ${this.settings.school_name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `School ID: ${this.settings.school_id}`, ``, ``, ``, ``, `School Year: `, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             // Quarter
                             [ `First Quarter`, ``, ``, `Grade: ${this.models.grading_sheet.sheet.level_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Teacher: ${this.models.grading_sheet.sheet.user_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Subject: ${this.models.grading_sheet.sheet.subject_id.name}`, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, `Section: ${this.models.grading_sheet.sheet.section_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``,``,  `Semester: ${this.models.grading_sheet.sheet.semester}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Track: ${this.models.grading_sheet.sheet.subject_track_id.name}`, ``, ``, ``, ``, ``, ``, ``, `` ],
                             // Learner's Name
-                            [ `Learner’s Name`, ``, ``, `Written Work (${this.vars.headers.written_work.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Performance Task (${this.vars.headers.performance_task.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Quarterly Assessment (${this.vars.headers.quarterly_assessment.percentage}%)`, ``, ``, `Initial Grade`, `Quarterly Grade` ],
-                            [ ``, ``, ``, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, `PS`, `WS`, ``, `` ],
+                            [ `Learner’s Name`, ``, ``, `Written Work (${this.vars.headers.written_work.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Performance Task (${this.vars.headers.performance_task.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Quarterly Assessment (${this.vars.headers.quarterly_assessment.percentage}%)`, ``, ``, ``, `Initial Grade`, `Quarterly Grade` ],
+                            [ ``, ``, ``, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, `Total`, `PS`, `WS`, ``, `` ],
                             // Highest Possible Score
-                            [ `Highest Possible Score`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `${this.vars.headers.written_work.percentage}%`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `${this.vars.headers.performance_task.percentage}%`, ``, ``, `${this.vars.headers.quarterly_assessment.percentage}%`, ``, `` ],
+                            [ `Highest Possible Score`, ``, ``, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ``, 100, `${this.vars.headers.written_work.percentage}%`, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ``, 100, `${this.vars.headers.performance_task.percentage}%`, 0, ``, 100, `${this.vars.headers.quarterly_assessment.percentage}%`, ``, `` ],
                         ],
                         second  : [
                             // Header
                             [ ``, ``, ``, `Senior High School Class Record`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
-                            [ ``, ``, ``, `Region: IV-A`, ``, ``, ``, ``, `Division: Lucena City`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
-                            [ ``, ``, ``, `School Name: Calayan Educational Foundation, Inc.`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `School ID: 403239`, ``, ``, ``, ``, `School Year: `, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
+                            [ ``, ``, ``, `Region: ${this.settings.region}`, ``, ``, ``, ``, `Division: ${this.settings.division}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
+                            [ ``, ``, ``, `School Name: ${this.settings.school_name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `School ID: ${this.settings.school_id}`, ``, ``, ``, ``, `School Year: `, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             // Quarter
                             [ `Second Quarter`, ``, ``, `Grade: ${this.models.grading_sheet.sheet.level_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Teacher: ${this.models.grading_sheet.sheet.user_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Subject: ${this.models.grading_sheet.sheet.subject_id.name}`, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, `Section: ${this.models.grading_sheet.sheet.section_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``,``,  `Semester: ${this.models.grading_sheet.sheet.semester}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Track: ${this.models.grading_sheet.sheet.subject_track_id.name}`, ``, ``, ``, ``, ``, ``, ``, `` ],
                             // Learner's Name
-                            [ `Learner’s Name`, ``, ``, `Written Work (${this.vars.headers.written_work.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Performance Task (${this.vars.headers.performance_task.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Quarterly Assessment (${this.vars.headers.quarterly_assessment.percentage}%)`, ``, ``, `Initial Grade`, `Quarterly Grade` ],
-                            [ ``, ``, ``, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, `PS`, `WS`, ``, `` ],
+                            [ `Learner’s Name`, ``, ``, `Written Work (${this.vars.headers.written_work.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Performance Task (${this.vars.headers.performance_task.percentage}%)`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Quarterly Assessment (${this.vars.headers.quarterly_assessment.percentage}%)`, ``, ``, ``, `Initial Grade`, `Quarterly Grade` ],
+                            [ ``, ``, ``, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, `Total`, `PS`, `WS`, 1, `Total`, `PS`, `WS`, ``, `` ],
                             // Highest Possible Score
-                            [ `Highest Possible Score`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `${this.vars.headers.written_work.percentage}%`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `${this.vars.headers.performance_task.percentage}%`, ``, ``, `${this.vars.headers.quarterly_assessment.percentage}%`, ``, `` ],
+                            [ `Highest Possible Score`, ``, ``, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ``, 100, `${this.vars.headers.written_work.percentage}%`, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ``, 100, `${this.vars.headers.performance_task.percentage}%`, 0, ``, 100, `${this.vars.headers.quarterly_assessment.percentage}%`, ``, `` ],
                         ],
                         finals  : [
                             // Header
                             [ ``, ``, ``, `Senior High School Class Record`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
-                            [ ``, ``, ``, `Region: IV-A`, ``, ``, ``, ``, `Division: Lucena City`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
-                            [ ``, ``, ``, `School Name: Calayan Educational Foundation, Inc.`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `School ID: 403239`, ``, ``, ``, ``, `School Year: `, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
+                            [ ``, ``, ``, `Region: ${this.settings.region}`, ``, ``, ``, ``, `Division: ${this.settings.division}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
+                            [ ``, ``, ``, `School Name: ${this.settings.school_name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `School ID: ${this.settings.school_id}`, ``, ``, ``, ``, `School Year: `, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             [ ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `` ],
                             // Quarter
                             [ ``, ``, ``, `Grade: ${this.models.grading_sheet.sheet.level_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Teacher: ${this.models.grading_sheet.sheet.user_id.name}`, ``, ``, ``, ``, ``, ``, ``, ``, ``, ``, `Subject: ${this.models.grading_sheet.sheet.subject_id.name}`, ``, ``, ``, ``, ``, ``, ``, `` ],
@@ -378,26 +405,36 @@
                         ]
                     }
                 
-
                 quarters.forEach(q => {
-                    this.models.grading_sheet.grades.forEach(grade => {
+                    // Written work
+                    this.models.grading_sheet.hps.written_work[q].forEach((v, k) => {
+                        data[q][10][(3 + k)] = v
+                    })
+                    data[q][10][13] = this.hpsTotal('written_work', q)
+
+                    // Performance task
+                    this.models.grading_sheet.hps.performance_task[q].forEach((v, k) => {
+                        data[q][10][(16 + k)] = v
+                    })
+                    data[q][10][26] = this.hpsTotal('performance_task', q)
+                    
+                    // Quarterly assessment
+                    this.models.grading_sheet.hps.quarterly_assessment[q].forEach((v, k) => {
+                        data[q][10][(29 + k)] = v
+                    })
+                    data[q][10][30] = this.hpsTotal('quarterly_assessment', q)
+
+                    this.models.grading_sheet.grades.forEach((grade, grade_i) => {
                         let ww = grade.written_work.quarters[q],
                             pt = grade.performance_task.quarters[q],
-                            qa = grade.quarterly_assessment.quarters[q],
-                            finals  = {
-                                ws      : {
-                                    ww          : parseFloat(ww.filter(v => { return v }).length ? (( ((ww.reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (ww.filter(v => { return v }).length) ).toFixed(2)) : 0),
-                                    pt          : parseFloat(pt.filter(v => { return v }).length ? (( ((pt.reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (pt.filter(v => { return v }).length) ).toFixed(2)) : 0),
-                                    qa          : parseFloat(qa.filter(v => { return v }).length ? (( ((qa.reduce((total, num) => { return total + parseFloat(num) }, 0) / 100) * 100) / (qa.filter(v => { return v }).length) ).toFixed(2)) : 0)
-                                }
-                            }
+                            qa = grade.quarterly_assessment.quarters[q]
 
                         data[q].push([
                             grade.student_id.name, ``, ``,
-                            ww[0], ww[1], ww[2], ww[3], ww[4], ww[5], ww[6], ww[7], ww[8], ww[9], ``, ``, finals.ws.ww,
-                            pt[0], pt[1], pt[2],  pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], ``, ``, finals.ws.pt,
-                            qa[0], ``, finals.ws.qa,
-                            ``, ((( finals.ws.ww + finals.ws.pt + finals.ws.qa ) / 300) * 100)
+                            ww[0], ww[1], ww[2], ww[3], ww[4], ww[5], ww[6], ww[7], ww[8], ww[9], this.studentGSTotal(grade_i, 'written_work', q), this.studentPSTotal(grade_i, 'written_work', q), `${this.studentWSTotal(grade_i, 'written_work', q).toFixed(2)}%`,
+                            pt[0], pt[1], pt[2],  pt[3], pt[4], pt[5], pt[6], pt[7], pt[8], pt[9], this.studentGSTotal(grade_i, 'performance_task', q), this.studentGSTotal(grade_i, 'performance_task', q), `${this.studentWSTotal(grade_i, 'performance_task', q).toFixed(2)}%`,
+                            qa[0], this.studentGSTotal(grade_i, 'quarterly_assessment', q), this.studentPSTotal(grade_i, 'quarterly_assessment', q), `${this.studentWSTotal(grade_i, 'quarterly_assessment', q).toFixed(2)}%`,
+                            this.studentInitialGrade(grade_i, q).toFixed(2), this.studentQuarterlyGrade(grade_i, q).grade
                         ])
 
                         data.finals.push([
@@ -470,7 +507,7 @@
                     { s: { r: 7, c: 25 }, e: { r: 7, c: 33 } }, // Track
                     { s: { r: 8, c: 3 }, e: { r: 8, c: 15 } }, // Written Work
                     { s: { r: 8, c: 16 }, e: { r: 8, c: 28 } }, // Performance Task
-                    { s: { r: 8, c: 29 }, e: { r: 8, c: 31 } }, // Quarterly Assessment
+                    { s: { r: 8, c: 29 }, e: { r: 8, c: 32 } }, // Quarterly Assessment
                     { s: { r: 8, c: 0 }, e: { r: 9, c: 2 } }, // Learner's Name
                     { s: { r: 10, c: 0 }, e: { r: 10, c: 2 } } // Highest Possible Score
                 ],
@@ -560,28 +597,62 @@
         },
         computed    : {
             ...mapGetters([
-                'user', 'options'
+                'user', 'options', 'settings', 'isRole'
             ]),
-            valid() {
-                // if( !this.models.grading_sheet.level_id ) 
-                //     return false;
+            hpsTotal() {
+                return (type, quarter) => {
+                    var hps = this.models.grading_sheet.hps[type][quarter]
 
-                // if( !this.models.grading_sheet.user_id ) 
-                //     return false;
+                    return hps.reduce((total, num) => {
+                        return parseFloat(total) + parseFloat(num)
+                    })
+                }
+            },
+            studentGSTotal() {
+                return (student, type, quarter) => {
+                    var gs = this.models.grading_sheet.grades[student][type].quarters[quarter]
 
-                // if( !this.models.grading_sheet.subject_id ) 
-                //     return false;
+                    return gs.reduce((total, num) => {
+                        return parseFloat(total) + parseFloat(num)
+                    })
+                }
+            },
+            studentPSTotal() {
+                return (student, type, quarter) => {
+                    var hpsTotal = parseFloat( this.hpsTotal(type, quarter) ),
+                        gsTotal = parseFloat( this.studentGSTotal(student, type, quarter) ),
+                        psTotal = (0 == hpsTotal) ? 0 : (( gsTotal / hpsTotal ) * 100)
 
-                // if( !this.models.grading_sheet.section_id ) 
-                //     return false;
+                    return psTotal
+                }
+            },
+            studentWSTotal() {
+                return (student, type, quarter) => {
+                    var ws = parseFloat(this.vars.headers[type].percentage / 100),
+                        psTotal = this.studentPSTotal(student, type, quarter),
+                        wsTotal = (0 == psTotal) ? 0 : ( psTotal * ws )
 
-                // if( !this.models.grading_sheet.semester ) 
-                //     return false;
+                    return wsTotal
+                }
+            },
+            studentInitialGrade() {
+                return (student, quarter) => {
+                    var ww = this.studentWSTotal(student, 'written_work', quarter),
+                        pt = this.studentWSTotal(student, 'performance_task', quarter),
+                        qa = this.studentWSTotal(student, 'quarterly_assessment', quarter)
 
-                // if( !this.models.grading_sheet.subject_track_id ) 
-                //     return false;
+                    return (ww + pt + qa)
+                }
+            },
+            studentQuarterlyGrade() {
+                return (student, quarter) => {
+                    var tg = JSON.parse( this.settings.transmuted_grades ),
+                        ig = parseFloat( this.studentInitialGrade(student, quarter) )
 
-                return true
+                    return (0 == ig) ? {grade: 0} : tg.find(t => {
+                        return (t.from >= ig) && (ig <= t.to)
+                    })
+                }
             }
         },
         created() {
@@ -609,15 +680,17 @@
                         this.models.grading_sheet = response.data.response
                         this.getSubjectTrackCols(response.data.response.subject_track_id)
                         
-                        this.heads.chief_adviser.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.chief_adviser.id)
-                        this.heads.program_head.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.program_head.id)
+                        if( 'undefined' != typeof this.models.grading_sheet.approvals ) {
+                            this.heads.chief_adviser.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.chief_adviser.id)
+                            this.heads.program_head.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.program_head.id)
                             
-                        if( 'chief-adviser' == this.user.role && this.heads.chief_adviser.approval ) {
-                            this.models.approval.id = this.heads.chief_adviser.approval.id
-                            this.models.approval.status = this.heads.chief_adviser.approval.status
-                        } else if( 'program-head' == this.user.role && this.heads.program_head.approval ) {
-                            this.models.approval.id = this.heads.program_head.approval.id
-                            this.models.approval.status =  this.heads.program_head.approval.status
+                            if( this.isRole('chief-adviser') && this.heads.chief_adviser.approval ) {
+                                this.models.approval.id = this.heads.chief_adviser.approval.id
+                                this.models.approval.status = this.heads.chief_adviser.approval.status
+                            } else if( this.isRole('program-head') && this.heads.program_head.approval ) {
+                                this.models.approval.id = this.heads.program_head.approval.id
+                                this.models.approval.status =  this.heads.program_head.approval.status
+                            }
                         }
                     }).catch(_ => {
                         this.$router.push({ name: 'grading-sheets' })
@@ -626,15 +699,17 @@
                     this.models.grading_sheet = this.$store.state.apiData.active
                     this.getSubjectTrackCols(this.$store.state.apiData.active.subject_track_id)
 
-                    this.heads.chief_adviser.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.chief_adviser.id)
-                    this.heads.program_head.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.program_head.id)
+                    if( 'undefined' != typeof this.models.grading_sheet.approvals ) {
+                        this.heads.chief_adviser.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.chief_adviser.id)
+                        this.heads.program_head.approval = this.models.grading_sheet.approvals.find(approval => approval.user_id == this.heads.program_head.id)
                         
-                    if( 'chief-adviser' == this.user.role && this.heads.chief_adviser.approval ) {
-                        this.models.approval.id = this.heads.chief_adviser.approval.id
-                        this.models.approval.status = this.heads.chief_adviser.approval.status
-                    } else if( 'program-head' == this.user.role && this.heads.program_head.approval ) {
-                        this.models.approval.id = this.heads.program_head.approval.id
-                        this.models.approval.status =  this.heads.program_head.approval.status
+                        if( this.isRole('chief-adviser') && this.heads.chief_adviser.approval ) {
+                            this.models.approval.id = this.heads.chief_adviser.approval.id
+                            this.models.approval.status = this.heads.chief_adviser.approval.status
+                        } else if( this.isRole('program-head') && this.heads.program_head.approval ) {
+                            this.models.approval.id = this.heads.program_head.approval.id
+                            this.models.approval.status =  this.heads.program_head.approval.status
+                        }
                     }
                 }
             } else {
@@ -647,18 +722,30 @@
                                 quarters                : {
                                     first                   : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
                                     second                  : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+                                },
+                                totals                  : {
+                                    first                   : 0,
+                                    second                  : 0
                                 }
                             },
                             performance_task        : {
                                 quarters                : {
                                     first                   : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
                                     second                  : [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+                                },
+                                totals                  : {
+                                    first                   : 0,
+                                    second                  : 0
                                 }
                             },
                             quarterly_assessment    : {
                                 quarters                : {
                                     first                   : [ 0 ],
                                     second                  : [ 0 ]
+                                },
+                                totals                  : {
+                                    first                   : 0,
+                                    second                  : 0
                                 }
                             }
                         })

@@ -76,7 +76,7 @@
                                     No strands found. Please create <router-link :to="{ name: 'strand_new' }">here.</router-link>
                                 </p>
 
-                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button :disabled="(0 == settings.status)" button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                                 <vs-button @click="$router.push({ name: 'students' })" color="grey" class="float-right">Cancel</vs-button>
                             </div>
                         </vs-card>
@@ -140,7 +140,7 @@
         },
         computed    : {
             ...mapGetters([
-                'options'
+                'options', 'settings'
             ])
         },
         created() {

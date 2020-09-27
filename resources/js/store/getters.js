@@ -1,15 +1,32 @@
 const getters = {
-    user        : state => {
+    auth(state) {
+        return state.user.token
+    },
+    user(state) {
         return state.user.data
     },
-    template    : state => {
+    isRole(state) {
+        return (value) => {
+            return value == state.user.data.role
+        }
+    },
+    template(state) {
         return state.template
     },
-    apiData     : state => {
+    apiData(state) {
         return state.apiData
     },
-    options     : state => {
+    options(state) {
         return state.options
+    },
+    settings(state) {
+        var settings = {}
+
+        state.settings.forEach(setting => {
+            settings[setting.key] = setting.value
+        })
+
+        return settings
     }
 }
 

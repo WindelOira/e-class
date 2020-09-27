@@ -1,21 +1,28 @@
 <template>
     <div>
         <h3 class="mb-3">Settings</h3>
-        <vs-tabs>
-            <vs-tab label="General">
-                <div></div>
-            </vs-tab>
-            <vs-tab label="System Status">
-                <div></div>
-            </vs-tab>
-        </vs-tabs>
+
+        <vs-row>
+            <vs-col vs-lg="6" vs-md="6" vs-sm="12">
+                <general></general>
+            </vs-col>
+            <vs-col vs-lg="6" vs-md="6" vs-sm="12">
+                <system-status></system-status>
+            </vs-col>
+        </vs-row>
     </div>
 </template>
 
 <script>
     import { mapGetters } from 'vuex'
+    import General from 'Views/portal/views/misc/settings/General'
+    import SystemStatus from 'Views/portal/views/misc/settings/SystemStatus'
 
     export default {
+        components  : {
+            'general'           : General,
+            'system-status'     : SystemStatus
+        },
         methods     : {
             ...mapGetters([
                 'user'
@@ -29,7 +36,7 @@
             }
         },
         created() {
-            if( 'administrator' != this.account.role ) {
+            if( this.account && 'administrator' != this.account.role ) {
                 this.$router.push({ name: 'dashboard' })
             }
         }

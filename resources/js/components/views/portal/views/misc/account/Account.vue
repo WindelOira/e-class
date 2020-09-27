@@ -36,7 +36,7 @@
                                 </vs-col>
                             </vs-row>
 
-                            <vs-button @click="update" :disabled="!valid">Update</vs-button>
+                            <vs-button @click="update" :disabled="!valid || (0 == settings.status)">Update</vs-button>
                         </div>
                     </vs-card>
                 </vs-col>
@@ -57,7 +57,7 @@
         },
         methods     : {
             ...mapGetters([
-                'user'
+                'user', 'settings'
             ]),
             update() {
                 this.$refs.observer.validate().then(success => {

@@ -90,7 +90,7 @@
                     <vs-col vs-xs="12" vs-sm="5" vs-lg="3">
                         <vs-card>
                             <div>
-                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button :disabled="(0 == settings.status)" button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                                 <vs-button @click="$router.push({ name: 'users' })" color="grey" class="float-right">Cancel</vs-button>
                             </div>
                         </vs-card>
@@ -102,6 +102,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
     export default {
@@ -119,6 +120,11 @@
                 }
             }
         },
+        computed    : {
+            ...mapGetters([
+                'settings'
+            ])
+        }, 
         methods     : {
             create() {
                 this.$refs.observer.validate().then(success => {

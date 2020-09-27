@@ -41,7 +41,7 @@
                                     No tracks found. Please create <router-link :to="{ name: 'track_new' }">here.</router-link>
                                 </p>
 
-                                <vs-button button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
+                                <vs-button :disabled="(0 == settings.status)" button="submit">{{ $route.params.id ? 'Update' : 'Save' }}</vs-button>
                                 <vs-button @click="$router.push({ name: 'strands' })" color="grey" class="float-right">Cancel</vs-button>
                             </div>
                         </vs-card>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import { ValidationObserver, ValidationProvider } from 'vee-validate'
 
     export default {
@@ -66,6 +67,11 @@
                     strand      : {}
                 }
             }
+        },
+        computed    : {
+            ...mapGetters([
+                'settings'
+            ])
         },
         methods     : {
             create() {
