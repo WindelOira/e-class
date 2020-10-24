@@ -19,23 +19,45 @@ class StudentController extends Controller
     {
         $filters = $filters ? explode(',', $filters) : false;
         $where = [];
+        $whereIn = [
+            'key'   => null,
+            'value' => []
+        ];
         
         if( $filters ) :
             foreach( $filters as $filter ) :
                 $filter = explode('=', $filter);
+                $values = explode('-', $filter[1]);
 
-                $where[] = [ $filter[0], '=', $filter[1] ];
+                if( 0 < count($values) ) :
+                    $whereIn['key'] = $filter[0];
+                    $whereIn['value'] = $values;
+                else :
+                    $where[] = [ $filter[0], '=', $filter[1] ];
+                endif;
             endforeach;
         endif;
 
         if( 'published' == $status ) :
-            $students = Student::whereNull('deleted_at')
-                    ->where($where)
-                    ->get();
+            if( !is_null($whereIn['key']) ) :
+                $students = Student::whereNull('deleted_at')
+                        ->whereIn($whereIn['key'], $whereIn['value'])
+                        ->get();
+            else :
+                $students = Student::whereNull('deleted_at')
+                        ->where($where)
+                        ->get();
+            endif;
         else :
-            $students = Student::onlyTrashed()
-            ->where($where)
-                    ->get();
+            if( !is_null($whereIn['key']) ) :
+                $students = Student::onlyTrashed()
+                    ->whereIn($whereIn['key'], $whereIn['value'])
+                        ->get();
+            else :
+                $students = Student::onlyTrashed()
+                        ->where($where)
+                        ->get();
+            endif;
         endif;
 
         return response()->json([

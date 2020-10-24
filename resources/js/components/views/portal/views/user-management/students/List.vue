@@ -18,6 +18,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import Table from 'Views/portal/partials/Table.vue'
 
     export default {
@@ -32,11 +33,14 @@
                     { key: 'name', text: 'Name' },
                 ],
                 models      : {
-                    filters     : {
+                    filters         : {
                         strand_id       : ''
                     }
                 }
             }
+        },
+        computed    : {
+            ...mapGetters(['user'])
         },
         methods     : {
             filter(type) {
@@ -48,6 +52,13 @@
 
             if( this.$route.params.section_id ) {
                 this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `section_id=${this.$route.params.section_id}` })
+            } else if( this.user.section ) {
+                let section_ids = []
+                this.user.section.forEach(section => {
+                    section_ids.push(section.id)
+                })
+
+                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `section_id=${section_ids.join('-')}` })
             }
         }
     }

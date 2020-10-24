@@ -4,7 +4,7 @@
             <h4>System Status</h4>
         </div>
         <div>
-            <vs-switch v-model="models.status" @click="updateStatus">
+            <vs-switch v-model="models.status" @change="updateStatus">
                 <span slot="on">On</span>
                 <span slot="off">Off</span>
             </vs-switch>
@@ -30,6 +30,7 @@
         },
         methods     : {
             updateStatus() {
+                console.log( this.models.status )
                 this.$store.dispatch('updateSettings', this.models).then(response => {
                     this.$vs.notify({ title: 'Success', text: 'Settings updated.', color: 'success' })
                 })

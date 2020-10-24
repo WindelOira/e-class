@@ -54,6 +54,13 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Subject');
     }
 
+     /**
+     * Get the section record associated with the user.
+     */
+    public function section() {
+        return $this->hasMany('App\Section');
+    }
+
     /**
      * The students that belong to the user.
      */

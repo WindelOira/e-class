@@ -34,6 +34,12 @@ class UserController extends Controller
             'token'     => $user->createToken( env('APP_NAME') )->accessToken,
             'user'      => $user
         ];
+
+        if( 'teacher' == $user->role ) :
+            $response['misc'] = [
+                'section'       => $user->section
+            ];
+        endif;
         
         return response()->json([
             'response'  =>  $response
