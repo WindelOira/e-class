@@ -24,6 +24,10 @@ const mutations = {
         state.apiData.source = payload.source
         state.apiData.datas = payload.datas
     },
+    UNSET_DATAS(state) {
+        state.apiData.source = ''
+        state.apiData.datas = []
+    },
     ADD_DATA(state, payload) {
         if( state.apiData.source != payload.source )
             return;

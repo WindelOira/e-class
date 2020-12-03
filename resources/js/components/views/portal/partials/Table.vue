@@ -35,7 +35,7 @@
                     <vs-td v-for="(th, th_key) in headers" :key="th_key">
                         <slot :name="th.key" v-bind:td="{ id: data[td_key].id, key: td_key, val: data[td_key][th.key] }">{{ data[td_key][th.key] }}</slot>
                     </vs-td>
-                    <vs-td>
+                    <vs-td v-if="!no_actions">
                         <slot name="actions" v-bind:id="data[td_key].id">
                             <vs-button v-if="data[td_key].deleted_at" @click="restoreDatasBySource(data[td_key].id)" type="flat">Restore</vs-button>
                             <vs-button v-else @click="getDataBySource(data[td_key].id)" type="flat">Edit</vs-button>
@@ -53,7 +53,7 @@
     import { mapGetters } from 'vuex'
 
     export default {
-        props       : ['title', 'source', 'alias', 'headers', 'filters'],
+        props       : ['title', 'source', 'where', 'alias', 'headers', 'filters', 'no_actions'],
         data() {
             return {
                 models      : {
@@ -63,9 +63,14 @@
             }
         },
         methods     : {
-            getDatasBySource(status = 'published', filters = null) {
+            getDatasBySource(status = 'published') {
                 this.mode = status
-                this.$store.dispatch('getDatasBySource', { source: this.source, status: status, filters: filters })
+
+                if( this.where ) {
+                    this.$store.dispatch('getDatasBySource', { source: this.source, status: status, filters: this.where })
+                } else {
+                    this.$store.dispatch('getDatasBySource', { source: this.source, status: status })
+                }
             },
             getDataBySource(id) {
                 this.$store.dispatch('getDataBySource', { source: this.source, id: id }).then(response => {

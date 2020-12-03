@@ -6,7 +6,7 @@
             </vs-col>
         </vs-row>
 
-        <app-table :headers="headers" :filters="true" source="students" title="Students">
+        <app-table :headers="headers" :filters="true" :where="section_ids ? `section_id=${section_ids}` : null" :no_actions="('administrator' != user.role)" source="students" title="Students">
             <template v-slot:filters>
                 <vs-select v-model="models.filters.strand_id" @change="filter('strand_id')" label="Filter by strand:" placeholder="Select strand">
                     <vs-select-item v-for="(strand, indexs) in $store.state.options.strands" :key="indexs" :value="strand.value" :text="strand.text"></vs-select-item>
@@ -40,25 +40,28 @@
             }
         },
         computed    : {
-            ...mapGetters(['user'])
+            ...mapGetters(['user']),
+            section_ids() {
+                let section_ids = null
+
+                if( this.$route.params.section_id ) {
+                    section_ids = this.$route.params.section_id
+                } else if( this.user.section ) {
+                    let ids = []
+
+                    this.user.section.forEach(section => {
+                        ids.push(section.id)
+                    })
+
+                    section_ids = ids.join('-')
+                }
+
+                return section_ids
+            }
         },
         methods     : {
             filter(type) {
                 this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `${type}=${this.models.filters[type]}` })
-            }
-        },
-        mounted() {
-            this.$store.dispatch('getSelectOptions', { source: 'strands' })
-
-            if( this.$route.params.section_id ) {
-                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `section_id=${this.$route.params.section_id}` })
-            } else if( this.user.section ) {
-                let section_ids = []
-                this.user.section.forEach(section => {
-                    section_ids.push(section.id)
-                })
-
-                this.$store.dispatch('getDatasBySource', { source: 'students', status: 'published', filters: `section_id=${section_ids.join('-')}` })
             }
         }
     }

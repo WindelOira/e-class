@@ -49,6 +49,8 @@ const actions = {
                 commit('UNSET_TOKEN')
                 commit('UNSET_USER')
                 commit('UNSET_SETTINGS')
+                commit('UNSET_DATAS')
+                commit('UNSET_ACTIVE_DATA')
 
                 resolve(response)
             }).catch(error => {
